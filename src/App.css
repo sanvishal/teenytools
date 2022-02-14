@@ -1,0 +1,73 @@
+@import url("https://fonts.googleapis.com/css2?family=Arvo&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap");
+
+@font-face {
+  font-family: "Avenir LT Std";
+  src: local("Avenir LT Std 55 Roman"), local("AvenirLTStd-Roman"),
+    url("./assets/fonts/AvenirLTStd-Roman.woff2") format("woff2"),
+    url("./assets/fonts/AvenirLTStd-Roman.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Avenir LT Std";
+  src: local("Avenir LT Std 95 Black"), local("AvenirLTStd-Black"),
+    url("./assets/fonts/AvenirLTStd-Black.woff2") format("woff2"),
+    url("./assets/fonts/AvenirLTStd-Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Avenir LT Std";
+  src: local("Avenir LT Std 45 Book"), local("AvenirLTStd-Book"),
+    url("./assets/fonts/AvenirLTStd-Book.woff2") format("woff2"),
+    url("./assets/fonts/AvenirLTStd-Book.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+::-moz-selection {
+  background: #ff634733;
+  color: #ff6347;
+}
+
+::selection {
+  background: #ff634733;
+  color: #ff6347;
+}
+
+.flexbox-fix input {
+  border: none;
+  background-color: transparent;
+  color: inherit !important;
+  font-family: "Space Mono";
+  border-radius: 6px !important;
+  box-shadow: #ffffff29 0px 0px 0px 1px inset !important;
+  font-size: 16px !important;
+  height: 30px !important;
+  /* border: 1px solid rgba(255, 255, 255, 0.16) !important; */
+}
+
+.flexbox-fix:nth-of-type(2) div:nth-child(2) div svg {
+  margin-left: 10px !important;
+  fill: grey;
+}
