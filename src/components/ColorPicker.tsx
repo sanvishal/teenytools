@@ -23,6 +23,7 @@ export const ColorPicker = ({
             overflow: "hidden",
             background: setDualColors(colorMode, "#ffffff", "#1f1f1f"),
             userSelect: "none",
+            fontFamily: "Avenir",
             boxShadow: "unset",
           },
         },

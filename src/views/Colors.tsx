@@ -1,31 +1,20 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Box,
-  Button,
+  Flex,
   Grid,
   GridItem,
   HStack,
-  Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItemOption,
-  MenuList,
-  MenuOptionGroup,
-  SimpleGrid,
   Tooltip,
-  useColorMode,
   useToast,
-  useToken,
   VStack,
 } from "@chakra-ui/react";
-import { ChromePicker, CustomPicker } from "react-color";
-import { EditableInput } from "react-color/lib/components/common";
-import chroma, { Color } from "chroma-js";
+import chroma from "chroma-js";
 import { ColorPicker } from "../components/ColorPicker";
-import { FiChevronDown, FiCopy } from "react-icons/fi";
-import { roundDecimals } from "../utils";
+import { FiCopy } from "react-icons/fi";
+import { ColorGrid, ColorGridContainer } from "../components/ColorGrid";
+import harmonizer from "../providers/HarmonizerProvider";
 
 const MotionBox = motion(Box);
 
@@ -72,6 +61,9 @@ const CopyableColor = ({
 
 export const Colors = (): ReactElement => {
   const [color, setColor] = useState<any>("orange");
+  const [numShades, setNumShades] = useState(8);
+  const [numTints, setNumTints] = useState(8);
+  const [numTones, setNumTones] = useState(8);
   const toast = useToast();
 
   const copyColor = (thingToCopy: string, col: any) => {
@@ -125,7 +117,13 @@ export const Colors = (): ReactElement => {
       .hsl()
       .map((x: number) => x.toFixed(3));
     hsl.push(col.a);
-    return `hsla(${hsl.join(",").replace(/,(\s+)?$/, "")})`;
+    return hsl.join(",").replace(/,(\s+)?$/, "");
+  };
+
+  const getRGBA = (col: any) => {
+    let rgb = chroma(col).rgb();
+    rgb.push(col.a);
+    return rgb.join(",").replace(/,(\s+)?$/, "");
   };
 
   const getGL = (col: any) => {
@@ -133,7 +131,7 @@ export const Colors = (): ReactElement => {
       .gl()
       .map((x: number) => x.toFixed(3));
     gl.push(col.a);
-    return gl.join(",").replace(/,(\s+)?$/, "");
+    return gl.join("f,").replace(/,(\s+)?$/, "");
   };
 
   const onColorChange = (data: any) => {
@@ -147,15 +145,16 @@ export const Colors = (): ReactElement => {
   return (
     <MotionBox
       w="100%"
-      style={{ height: "calc(100vh - 88px)" }}
+      sx={{ height: { md: "calc(100vh - 88px)", sm: "unset" } }}
       padding={6}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 1 }}
       transition={{ duration: 0.24 }}
+      overflow={{ xl: "hidden", lg: "scroll" }}
     >
-      <Grid templateRows="repeat(2, 1fr)" templateColumns="repeat(5, 1fr)">
-        <GridItem rowSpan={2} colSpan={1}>
+      <Flex h="full" wrap={{ lg: "wrap", xl: "nowrap" }}>
+        <Box mb={6}>
           <VStack align={{ md: "flex-start", sm: "center" }} w="100%">
             <ColorPicker
               color={color}
@@ -205,16 +204,9 @@ export const Colors = (): ReactElement => {
               />
               <CopyableColor
                 label="RGB"
-                textToDisplay={chroma(color)
-                  .alpha(color.a || 1)
-                  .css()}
+                textToDisplay={getRGBA(color)}
                 onClick={() => {
-                  copyColor(
-                    chroma(color)
-                      .alpha(color.a || 1)
-                      .css(),
-                    color
-                  );
+                  copyColor(`rgba(${getRGBA(color)})`, color);
                 }}
               />
               <CopyableColor
@@ -276,8 +268,104 @@ export const Colors = (): ReactElement => {
               />
             </VStack>
           </VStack>
-        </GridItem>
-      </Grid>
+        </Box>
+        <Box
+          // bg="green.200"
+          w={{ md: "40%", sm: "full" }}
+          flexGrow={1}
+          h="full"
+          px={{ md: 8, sm: 0 }}
+          overflow={{ xl: "auto", lg: "unset" }}
+        ></Box>
+        <Box
+          // bg="tomato"
+          flexGrow={1}
+          w={{ md: "40%", sm: "full" }}
+          h="full"
+          px={{ md: 8, sm: 0 }}
+          overflow={{ xl: "auto", lg: "unset" }}
+        >
+          <VStack align={"flex-start"} spacing={4}>
+            <ColorGridContainer
+              title="Complementary"
+              colArray={harmonizer.harmonize(
+                chroma(color).alpha(1).hex(),
+                "complementary"
+              )}
+            />
+            <ColorGridContainer
+              title="Split Complementary"
+              colArray={harmonizer.harmonize(
+                chroma(color).alpha(1).hex(),
+                "splitComplementary"
+              )}
+            />
+            <ColorGridContainer
+              title="Triadic"
+              colArray={harmonizer.harmonize(
+                chroma(color).alpha(1).hex(),
+                "triadic"
+              )}
+            />
+            <ColorGridContainer
+              title="Tetradic"
+              colArray={harmonizer.harmonize(
+                chroma(color).alpha(1).hex(),
+                "tetradic"
+              )}
+            />
+            <ColorGridContainer
+              title="Analogous"
+              colArray={harmonizer.harmonize(
+                chroma(color).alpha(1).hex(),
+                "analogous"
+              )}
+            />
+            <ColorGridContainer
+              showControls
+              onIncrease={() => {
+                setNumShades(numShades + 1);
+              }}
+              onDecrease={() => {
+                setNumShades(numShades - 1);
+              }}
+              title="Shades"
+              colArray={harmonizer.shades(
+                chroma(color).alpha(1).hex(),
+                numShades
+              )}
+            />
+            <ColorGridContainer
+              showControls
+              onIncrease={() => {
+                setNumTints(numTints + 1);
+              }}
+              onDecrease={() => {
+                setNumTints(numTints - 1);
+              }}
+              title="Tints"
+              colArray={harmonizer.tints(
+                chroma(color).alpha(1).hex(),
+                numTints
+              )}
+            />
+            <ColorGridContainer
+              showControls
+              onIncrease={() => {
+                setNumTones(numTones + 1);
+              }}
+              onDecrease={() => {
+                setNumTones(numTones - 1);
+              }}
+              title="Tones"
+              colArray={harmonizer.tones(
+                chroma(color).alpha(1).hex(),
+                numTones
+              )}
+            />
+          </VStack>
+        </Box>
+      </Flex>
     </MotionBox>
   );
 };

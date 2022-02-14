@@ -29,6 +29,7 @@ const theme = extendTheme({
       cardBg: { default: "#ffffff80", _dark: "#23232390" },
       cardBgHover: { default: "#ffffff80", _dark: "#23232390" },
       toastBg: { default: "#efefef", _dark: "#232323" },
+      scrollBarThumb: { default: "#d0d0d0", _dark: "#3e3e3e" },
     },
     boxShadow: {
       md: "0 8px 30px #0000001f",

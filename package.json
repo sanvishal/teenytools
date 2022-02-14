@@ -14,6 +14,7 @@
     "@types/react": "^16.14.23",
     "@types/react-dom": "^16.9.14",
     "chroma-js": "^2.4.2",
+    "color-harmony": "^0.3.0",
     "framer-motion": "^4.1.17",
     "react": "^17.0.2",
     "react-color": "^2.19.3",

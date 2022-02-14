@@ -55,6 +55,29 @@ body {
   color: #ff6347;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--chakra-colors-toastBg);
+  border-radius: 6px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--chakra-colors-scrollBarThumb);
+  border-radius: 6px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 .flexbox-fix input {
   border: none;
   background-color: transparent;
