@@ -1,7 +1,7 @@
 import { useColorMode } from "@chakra-ui/react";
 import { ReactElement } from "react";
 import { ChromePicker } from "react-color";
-import { setDualColors } from "../utils";
+import { setDualColors } from "../utils/utils";
 
 export const ColorPicker = ({
   color,

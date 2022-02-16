@@ -1,70 +1,74 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useContext, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Box,
   Flex,
-  Grid,
-  GridItem,
-  HStack,
-  Tooltip,
+  ResponsiveValue,
+  Text,
+  useBreakpointValue,
   useToast,
   VStack,
 } from "@chakra-ui/react";
 import chroma from "chroma-js";
 import { ColorPicker } from "../components/ColorPicker";
-import { FiCopy } from "react-icons/fi";
-import { ColorGrid, ColorGridContainer } from "../components/ColorGrid";
+import { ColorGridContainer } from "../components/ColorGrid";
 import harmonizer from "../providers/HarmonizerProvider";
+import {
+  generateBaseColors,
+  generateRandomHarmony,
+  getGL,
+  getHSLA,
+  getHSVA,
+  getPalette2,
+  getPalette4,
+  getPaletteNice,
+  getRGBA,
+} from "../utils/colorUtils";
+import { randRange } from "../utils/utils";
+import { AccessibilityChart } from "../components/AccessibilityChart";
+import { CopyableColor } from "../components/CopyableColor";
+import { ColorDialogContext } from "../providers/ColorDialog";
+import { ColoredToast } from "../components/ColoredToast";
 
 const MotionBox = motion(Box);
 
-const CopyableColor = ({
-  label,
-  textToDisplay,
-  onClick,
-}: {
-  label: string;
-  textToDisplay: string;
-  onClick: () => void;
-}) => {
-  return (
-    <HStack align={"center"} w="full" maxW="300px" isTruncated color="gray">
-      <Box>{label}</Box>
-      <Tooltip
-        label={textToDisplay}
-        fontFamily="monospace"
-        hasArrow
-        bg="toastBg"
-        color="text"
-      >
-        <HStack
-          justify={"space-between"}
-          w="full"
-          bgColor="cardBg"
-          py={1}
-          px={1.5}
-          borderRadius={3}
-          cursor="pointer"
-          onClick={onClick}
-        >
-          <Box width={226} isTruncated>
-            {textToDisplay}
-          </Box>
-          <Box>
-            <FiCopy color="gray" />
-          </Box>
-        </HStack>
-      </Tooltip>
-    </HStack>
-  );
-};
-
 export const Colors = (): ReactElement => {
-  const [color, setColor] = useState<any>("orange");
+  const { setColor: setDialogColor, openColorDialog } =
+    useContext(ColorDialogContext);
+  if (chroma.valid(window.location.hash)) {
+    setDialogColor(window.location.hash || "orange");
+    openColorDialog();
+  }
+  const [color, setColor] = useState<any>(
+    chroma.valid(window.location.hash) ? window.location.hash : "orange"
+  );
   const [numShades, setNumShades] = useState(8);
   const [numTints, setNumTints] = useState(8);
   const [numTones, setNumTones] = useState(8);
+  const [nicePaletteIdx, setNicePaletteIdx] = useState(0);
+  const hexNoAlpha = useMemo(() => chroma(color).alpha(1).hex(), [color]);
+  const hexIncAlpha = useMemo(
+    () =>
+      chroma(color)
+        .alpha(color.a || 1)
+        .hex(),
+    [color]
+  );
+  const baseShades = useMemo(
+    () => generateBaseColors(hexNoAlpha),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [color]
+  );
+  const [randomHarmonies, setRandomHarmonies] = useState({
+    light: generateRandomHarmony(hexNoAlpha, 5, "lab"),
+    vibrant: generateRandomHarmony(hexNoAlpha, 5, "hsl"),
+  });
   const toast = useToast();
+  const layoutWrap = useBreakpointValue<ResponsiveValue<any>>({
+    base: "wrap",
+    lg: "nowrap",
+    xs: "wrap",
+  });
 
   const copyColor = (thingToCopy: string, col: any) => {
     navigator.clipboard.writeText(thingToCopy);
@@ -77,69 +81,27 @@ export const Colors = (): ReactElement => {
           minWidth: "unset",
         },
         render: () => (
-          <HStack
-            bg={chroma(col).alpha(0.2).hex()}
-            p={2}
-            px={3}
-            borderRadius={6}
-            spacing={3}
-            backdropBlur="20px"
-          >
-            <Box
-              userSelect={"none"}
-              bg={chroma(col)
-                .alpha(col.a || 1)
-                .hex()}
-              w={4}
-              h={4}
-              borderRadius={3}
-              boxShadow={"md"}
-            ></Box>
-            <Box userSelect={"none"} color="text">
-              copied to clipboard 🎉
-            </Box>
-          </HStack>
+          <ColoredToast
+            bgColor={chroma(col).alpha(0.2).hex()}
+            actualColor={hexIncAlpha}
+            message="copied to clipboard 🎉"
+          />
         ),
       });
     }
   };
 
-  const getHSVA = (col: any) => {
-    let hsv = chroma(col)
-      .hsv()
-      .map((x: number) => x.toFixed(3));
-    hsv.push(col.a);
-    return hsv.join(",").replace(/,(\s+)?$/, "");
-  };
-
-  const getHSLA = (col: any) => {
-    let hsl = chroma(col)
-      .hsl()
-      .map((x: number) => x.toFixed(3));
-    hsl.push(col.a);
-    return hsl.join(",").replace(/,(\s+)?$/, "");
-  };
-
-  const getRGBA = (col: any) => {
-    let rgb = chroma(col).rgb();
-    rgb.push(col.a);
-    return rgb.join(",").replace(/,(\s+)?$/, "");
-  };
-
-  const getGL = (col: any) => {
-    let gl = chroma(col)
-      .gl()
-      .map((x: number) => x.toFixed(3));
-    gl.push(col.a);
-    return gl.join("f,").replace(/,(\s+)?$/, "");
-  };
-
   const onColorChange = (data: any) => {
     setColor(data.rgb);
+    setNicePaletteIdx(0);
+    setRandomHarmonies({
+      light: generateRandomHarmony(hexNoAlpha, 5, "lab"),
+      vibrant: generateRandomHarmony(hexNoAlpha, 5, "hsl"),
+    });
   };
 
-  const onChangeComplete = (data: any) => {
-    // setColor(data.rgb);
+  const onNicePaletteRandomize = () => {
+    setNicePaletteIdx(randRange(0, 30));
   };
 
   return (
@@ -151,15 +113,23 @@ export const Colors = (): ReactElement => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 1 }}
       transition={{ duration: 0.24 }}
-      overflow={{ xl: "hidden", lg: "scroll" }}
+      overflow={{ xl: "hidden", lg: "scroll", sm: "scroll" }}
     >
-      <Flex h="full" wrap={{ lg: "wrap", xl: "nowrap" }}>
+      <Flex h="full" wrap={layoutWrap}>
         <Box mb={6}>
           <VStack align={{ md: "flex-start", sm: "center" }} w="100%">
             <ColorPicker
               color={color}
               onChange={onColorChange}
-              onChangeComplete={onChangeComplete}
+              // onChangeComplete={() => {
+              //   setColor(color.rgb);
+              //   window.history.replaceState(
+              //     undefined,
+              //     // @ts-ignore
+              //     undefined,
+              //     hexNoAlpha
+              //   );
+              // }}
             />
             <VStack
               w="300px"
@@ -170,36 +140,16 @@ export const Colors = (): ReactElement => {
             >
               <CopyableColor
                 label="HEX"
-                textToDisplay={chroma(color)
-                  .alpha(color.a || 1)
-                  .hex()}
+                textToDisplay={hexIncAlpha}
                 onClick={() => {
-                  copyColor(
-                    chroma(color)
-                      .alpha(color.a || 1)
-                      .hex(),
-                    color
-                  );
+                  copyColor(hexIncAlpha, color);
                 }}
               />
               <CopyableColor
                 label="HEX"
-                textToDisplay={
-                  "0x" +
-                  chroma(color)
-                    .alpha(color.a || 1)
-                    .hex()
-                    .substring(1)
-                }
+                textToDisplay={"0x" + hexIncAlpha.substring(1)}
                 onClick={() => {
-                  copyColor(
-                    "0x" +
-                      chroma(color)
-                        .alpha(color.a || 1)
-                        .hex()
-                        .substring(1),
-                    color
-                  );
+                  copyColor("0x" + hexIncAlpha.substring(1), color);
                 }}
               />
               <CopyableColor
@@ -273,10 +223,52 @@ export const Colors = (): ReactElement => {
           // bg="green.200"
           w={{ md: "40%", sm: "full" }}
           flexGrow={1}
-          h="full"
           px={{ md: 8, sm: 0 }}
           overflow={{ xl: "auto", lg: "unset" }}
-        ></Box>
+        >
+          <VStack align={"flex-start"} spacing={4}>
+            <ColorGridContainer
+              title="Nice Palette"
+              showRandomize
+              onRandomize={onNicePaletteRandomize}
+              colArray={getPaletteNice(hexNoAlpha, nicePaletteIdx)}
+            />
+            <ColorGridContainer
+              title="Random Harmony"
+              showRandomize
+              onRandomize={() => {
+                setRandomHarmonies({
+                  light: generateRandomHarmony(hexNoAlpha, 5, "lab"),
+                  vibrant: randomHarmonies.vibrant,
+                });
+              }}
+              colArray={randomHarmonies.light}
+            />
+            <ColorGridContainer
+              title="Random Harmony: The Sequel"
+              showRandomize
+              onRandomize={() => {
+                setRandomHarmonies({
+                  light: randomHarmonies.light,
+                  vibrant: generateRandomHarmony(hexNoAlpha, 5, "hsl"),
+                });
+              }}
+              colArray={randomHarmonies.vibrant}
+            />
+            <ColorGridContainer
+              title="Hue Skip"
+              colArray={getPalette2(baseShades)}
+            />
+            <ColorGridContainer
+              title="Gradiant Jump"
+              colArray={getPalette4(baseShades, "light")}
+            />
+            {/* <ColorGridContainer
+              title="Odd One Out"
+              colArray={getPalette1(hexNoAlpha, 120)}
+            /> */}
+          </VStack>
+        </Box>
         <Box
           // bg="tomato"
           flexGrow={1}
@@ -286,41 +278,6 @@ export const Colors = (): ReactElement => {
           overflow={{ xl: "auto", lg: "unset" }}
         >
           <VStack align={"flex-start"} spacing={4}>
-            <ColorGridContainer
-              title="Complementary"
-              colArray={harmonizer.harmonize(
-                chroma(color).alpha(1).hex(),
-                "complementary"
-              )}
-            />
-            <ColorGridContainer
-              title="Split Complementary"
-              colArray={harmonizer.harmonize(
-                chroma(color).alpha(1).hex(),
-                "splitComplementary"
-              )}
-            />
-            <ColorGridContainer
-              title="Triadic"
-              colArray={harmonizer.harmonize(
-                chroma(color).alpha(1).hex(),
-                "triadic"
-              )}
-            />
-            <ColorGridContainer
-              title="Tetradic"
-              colArray={harmonizer.harmonize(
-                chroma(color).alpha(1).hex(),
-                "tetradic"
-              )}
-            />
-            <ColorGridContainer
-              title="Analogous"
-              colArray={harmonizer.harmonize(
-                chroma(color).alpha(1).hex(),
-                "analogous"
-              )}
-            />
             <ColorGridContainer
               showControls
               onIncrease={() => {
@@ -363,6 +320,39 @@ export const Colors = (): ReactElement => {
                 numTones
               )}
             />
+            <Box w="full" fontSize={"lg"}>
+              <Text px={2}>Contrast</Text>
+              <AccessibilityChart color={hexNoAlpha} />
+            </Box>
+
+            {/* <ColorGridContainer
+              title="Analogous"
+              colArray={harmonizer.harmonize(
+                chroma(color).alpha(1).hex(),
+                "analogous"
+              )}
+            />
+            <ColorGridContainer
+              title="Tetradic"
+              colArray={harmonizer.harmonize(
+                chroma(color).alpha(1).hex(),
+                "tetradic"
+              )}
+            />
+            <ColorGridContainer
+              title="Triadic"
+              colArray={harmonizer.harmonize(
+                chroma(color).alpha(1).hex(),
+                "triadic"
+              )}
+            />
+            <ColorGridContainer
+              title="Complementary"
+              colArray={harmonizer.harmonize(
+                chroma(color).alpha(1).hex(),
+                "complementary"
+              )}
+            /> */}
           </VStack>
         </Box>
       </Flex>

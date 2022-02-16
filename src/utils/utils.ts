@@ -10,5 +10,9 @@ const roundDecimals = (num: number) => {
   return num.toFixed(3);
 };
 
+const randRange = (min: number, max: number): number => {
+  return Math.floor(Math.random() * (max - min) + min);
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export { setDualColors, roundDecimals };
+export { setDualColors, roundDecimals, randRange };

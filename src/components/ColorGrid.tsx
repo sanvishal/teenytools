@@ -1,6 +1,6 @@
-import { Box, Button, HStack, Text, VStack } from "@chakra-ui/react";
+import { Box, HStack, Text } from "@chakra-ui/react";
 import { ReactElement } from "react";
-import { FiMinus, FiPlus } from "react-icons/fi";
+import { FiMinus, FiPlus, FiRefreshCcw } from "react-icons/fi";
 import { ColorTile } from "./ColorTile";
 
 export const ColorGrid = ({
@@ -10,8 +10,9 @@ export const ColorGrid = ({
 }): ReactElement => {
   return (
     <HStack wrap={"wrap"}>
-      {colArray.map((color) => (
+      {colArray.map((color, idx) => (
         <Box
+          key={idx}
           p={1}
           style={{
             marginInline: "unset",
@@ -26,29 +27,40 @@ export const ColorGrid = ({
 
 export const ColorGridContainer = ({
   title,
+  titleColor,
+  highlightColor,
   colArray,
   showControls = false,
+  showRandomize = false,
   onIncrease,
   onDecrease,
+  onRandomize,
 }: {
   title: string;
+  titleColor?: string;
+  highlightColor?: string;
   colArray: string[];
   showControls?: boolean;
+  showRandomize?: boolean;
   onIncrease?: () => void;
   onDecrease?: () => void;
+  onRandomize?: () => void;
 }): ReactElement => {
   return (
     <Box
-      p={{ md: 2, sm: 0 }}
+      className="no-select"
+      p={{ md: 2, sm: 2 }}
       transition="background 0.2s ease-in-out"
       _hover={{
-        background: "cardBg",
+        background: highlightColor ? highlightColor : "cardBg",
       }}
       w="full"
       borderRadius={6}
     >
       <HStack alignItems={"flex-start"}>
-        <Text fontSize={"lg"}>{title}</Text>
+        <Text fontSize={"lg"} color={titleColor}>
+          {title}
+        </Text>
         {showControls && (
           <>
             <Box
@@ -70,6 +82,19 @@ export const ColorGridContainer = ({
               <FiPlus />
             </Box>
           </>
+        )}
+        {showRandomize && (
+          <Box
+            px={2}
+            py={0.5}
+            cursor="pointer"
+            border="1px solid #333333"
+            borderRadius={4}
+            onClick={onRandomize}
+          >
+            {/* <Text fontSize={"small"}>Refresh</Text> */}
+            <FiRefreshCcw />
+          </Box>
         )}
       </HStack>
       <ColorGrid colArray={colArray} />
