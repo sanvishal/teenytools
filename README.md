@@ -1,3 +1,5 @@
+### [![Netlify Status](https://api.netlify.com/api/v1/badges/a31b2d70-cd5a-42d6-b10c-c12c5196b47e/deploy-status)](https://app.netlify.com/sites/teenytools/deploys)
+
 This project uses
 
 - CRA + typescript
