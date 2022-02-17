@@ -5,7 +5,7 @@ export const CopyableColor = ({
   label,
   textColor,
   bgColor,
-  isLong = true,
+  isLong = false,
   textToDisplay,
   onClick,
 }: {

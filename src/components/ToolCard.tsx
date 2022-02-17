@@ -6,12 +6,14 @@ import { ToolContainer } from "./ToolContainer";
 export const ToolCard = ({
   toolName,
   description,
+  link,
 }: {
   toolName: string;
   description: string;
+  link: string;
 }): ReactElement => {
   return (
-    <Link to="/colors">
+    <Link to={link}>
       <Box
         w="100%"
         h="300px"

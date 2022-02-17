@@ -228,6 +228,7 @@ export const Colors = (): ReactElement => {
         >
           <VStack align={"flex-start"} spacing={4}>
             <ColorGridContainer
+              onOpenPalette={() => {}}
               title="Nice Palette"
               showRandomize
               onRandomize={onNicePaletteRandomize}

@@ -54,7 +54,10 @@ export const ColorDialogProvider = ({
     return chroma.contrast(color, "#333333") > 4.5 ? "#333333" : "#fefefe";
   };
 
-  const copyColor = (thingToCopy: string) => {
+  const copyColor = (
+    thingToCopy: string,
+    thingToSay: string = "copied to clipboard 🎉"
+  ) => {
     navigator.clipboard.writeText(thingToCopy);
     if (!toast.isActive("color-toast" + thingToCopy)) {
       toast({
@@ -68,7 +71,7 @@ export const ColorDialogProvider = ({
           <ColoredToast
             bgColor={chroma(color).alpha(0.2).hex()}
             actualColor={color}
-            message="copied to clipboard 🎉"
+            message={thingToSay}
           />
         ),
       });
@@ -106,9 +109,14 @@ export const ColorDialogProvider = ({
         onClose={onClose}
         size="6xl"
       >
-        <AlertDialogOverlay>
+        <AlertDialogOverlay
+          bg={chroma(color).alpha(0.1).css()}
+          backdropFilter={"blur(2px)"}
+        >
           <AlertDialogContent
             bg={color}
+            // bg={chroma(color).alpha(0.5).hex()}
+            // backdropFilter={"blur(20px)"}
             transition="background 0.2s ease-in-out"
           >
             <AlertDialogHeader
@@ -143,7 +151,7 @@ export const ColorDialogProvider = ({
                     background: getHighlightColor(),
                   }}
                   onClick={() => {
-                    copyColor(getURLToShare());
+                    copyColor(getURLToShare(), "link copied to clipboard ✨");
                   }}
                   transition="background 0.2s ease-in-out"
                   borderRadius="7px"
@@ -196,6 +204,7 @@ export const ColorDialogProvider = ({
                 >
                   <CopyableColor
                     label="HEX"
+                    isLong
                     textColor={getTextColor()}
                     bgColor={getHighlightColor()}
                     textToDisplay={color}
@@ -205,6 +214,7 @@ export const ColorDialogProvider = ({
                   />
                   <CopyableColor
                     label="HEX"
+                    isLong
                     textColor={getTextColor()}
                     bgColor={getHighlightColor()}
                     textToDisplay={"0x" + color}
@@ -214,6 +224,7 @@ export const ColorDialogProvider = ({
                   />
                   <CopyableColor
                     label="RGB"
+                    isLong
                     textColor={getTextColor()}
                     bgColor={getHighlightColor()}
                     textToDisplay={getRGBA(color)}
@@ -223,6 +234,7 @@ export const ColorDialogProvider = ({
                   />
                   <CopyableColor
                     label="HSL"
+                    isLong
                     textColor={getTextColor()}
                     bgColor={getHighlightColor()}
                     textToDisplay={getHSLA(color)}
@@ -232,6 +244,7 @@ export const ColorDialogProvider = ({
                   />
                   <CopyableColor
                     label="HSV"
+                    isLong
                     textColor={getTextColor()}
                     bgColor={getHighlightColor()}
                     textToDisplay={getHSVA(color)}
@@ -241,6 +254,7 @@ export const ColorDialogProvider = ({
                   />
                   <CopyableColor
                     label="LAB"
+                    isLong
                     textColor={getTextColor()}
                     bgColor={getHighlightColor()}
                     textToDisplay={chroma(color)
@@ -258,6 +272,7 @@ export const ColorDialogProvider = ({
                   />
                   <CopyableColor
                     label="LCH"
+                    isLong
                     textColor={getTextColor()}
                     bgColor={getHighlightColor()}
                     textToDisplay={chroma(color)
@@ -275,6 +290,7 @@ export const ColorDialogProvider = ({
                   />
                   <CopyableColor
                     label="GLS"
+                    isLong
                     textColor={getTextColor()}
                     bgColor={getHighlightColor()}
                     textToDisplay={getGL(color)}

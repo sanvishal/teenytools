@@ -6,8 +6,15 @@ import { ToolCard } from "./ToolCard";
 const apps = [
   {
     name: "Colors",
+    link: "/colors",
     description:
-      "Generate lots of color palettes with just one color, export to many places",
+      "Generate lots of color palettes with just one color, share and export to many places",
+  },
+  {
+    name: "Palettes",
+    link: "/palettes",
+    description:
+      "A Local Repository to create, save, search, share and export your favorite palettes",
   },
   {
     name: "Gradiants",
@@ -39,7 +46,12 @@ export const AppGrid = (): ReactElement => {
       transition={{ duration: 0.24 }}
     >
       {apps.map((app, idx) => (
-        <ToolCard key={idx} toolName={app.name} description={app.description} />
+        <ToolCard
+          key={idx}
+          toolName={app.name}
+          description={app.description}
+          link={app.link || ""}
+        />
       ))}
     </MotionSimpleGrid>
   );
