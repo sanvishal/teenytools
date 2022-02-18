@@ -1,7 +1,8 @@
 import { Box, HStack, Text } from "@chakra-ui/react";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { FiFolderPlus, FiMinus, FiPlus, FiRefreshCcw } from "react-icons/fi";
 import { ColorTile } from "./ColorTile";
+import { PaletteDialog } from "./PaletteDialog";
 
 export const ColorGrid = ({
   colArray,
@@ -48,6 +49,12 @@ export const ColorGridContainer = ({
   onDecrease?: () => void;
   onRandomize?: () => void;
 }): ReactElement => {
+  const [isPaletteDialogOpen, setIsPaletteDialogOpen] = useState(false);
+
+  const onPaletteDialogClose = () => {
+    setIsPaletteDialogOpen(false);
+  };
+
   return (
     <Box
       className="no-select color-grid"
@@ -58,7 +65,7 @@ export const ColorGridContainer = ({
       }}
       onClick={(e) => {
         e.stopPropagation();
-        onOpenPalette?.();
+        setIsPaletteDialogOpen(true);
       }}
       w="full"
       borderRadius={6}
@@ -119,7 +126,7 @@ export const ColorGridContainer = ({
             py={0.5}
             onClick={(e) => {
               e.stopPropagation();
-              onOpenPalette?.();
+              setIsPaletteDialogOpen(true);
             }}
             opacity={0}
             _groupHover={{ opacity: 1 }}
@@ -130,6 +137,11 @@ export const ColorGridContainer = ({
         )}
       </HStack>
       <ColorGrid colArray={colArray} />
+      <PaletteDialog
+        isOpen={isPaletteDialogOpen}
+        onClose={onPaletteDialogClose}
+        colors={colArray}
+      />
     </Box>
   );
 };

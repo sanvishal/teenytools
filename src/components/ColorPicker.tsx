@@ -7,7 +7,13 @@ export const ColorPicker = ({
   color,
   onChange,
   onChangeComplete,
-}: any): ReactElement => {
+  showAlpha = true,
+}: {
+  color: any;
+  onChange?: any;
+  onChangeComplete?: any;
+  showAlpha?: boolean;
+}): ReactElement => {
   const { colorMode } = useColorMode();
 
   return (
@@ -15,6 +21,7 @@ export const ColorPicker = ({
       color={color}
       onChange={onChange}
       onChangeComplete={onChangeComplete}
+      disableAlpha={!showAlpha}
       styles={{
         default: {
           picker: {

@@ -29,6 +29,7 @@ import { AccessibilityChart } from "../components/AccessibilityChart";
 import { CopyableColor } from "../components/CopyableColor";
 import { ColorDialogContext } from "../providers/ColorDialog";
 import { ColoredToast } from "../components/ColoredToast";
+import { PaletteDialog } from "../components/PaletteDialog";
 
 const MotionBox = motion(Box);
 
@@ -228,7 +229,6 @@ export const Colors = (): ReactElement => {
         >
           <VStack align={"flex-start"} spacing={4}>
             <ColorGridContainer
-              onOpenPalette={() => {}}
               title="Nice Palette"
               showRandomize
               onRandomize={onNicePaletteRandomize}

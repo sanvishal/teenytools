@@ -283,6 +283,16 @@ const generateRandomHarmony = (
     .reverse();
 };
 
+const getTextColor = (color: string) => {
+  return chroma.contrast(color, "#333333") > 4.5 ? "#333333" : "#fefefe";
+};
+
+const getHighlightColor = (color: string) => {
+  return chroma.contrast(color, "#333333") > 4.5
+    ? chroma(color).darken(0.5).hex()
+    : chroma(color).brighten(0.5).hex();
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export {
   generateBaseColors,
@@ -297,4 +307,6 @@ export {
   getHSLA,
   getHSVA,
   getRGBA,
+  getTextColor,
+  getHighlightColor,
 };

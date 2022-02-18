@@ -30,12 +30,30 @@ const theme = extendTheme({
       cardBgHover: { default: "#ffffff80", _dark: "#23232390" },
       toastBg: { default: "#efefef", _dark: "#232323" },
       scrollBarThumb: { default: "#d0d0d0", _dark: "#3e3e3e" },
+      dialogBg: {
+        default: "gray.50",
+        _dark: "#212121",
+      },
+      dialogFg: {
+        default: "gray.100",
+        _dark: "#272727",
+      },
     },
     boxShadow: {
       md: "0 8px 30px #0000001f",
     },
+    backdropFilter: {
+      dialogFilter: {
+        default: "saturate(300%) blur(25px)",
+        _dark: "blur(25px)",
+      },
+    },
     borders: {
       thin: "1px solid",
+      dialogBorder: {
+        default: "1px solid #f2f2f27a",
+        _dark: "1px solid #f2f2f21a",
+      },
     },
   },
 });

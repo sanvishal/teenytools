@@ -98,3 +98,15 @@ body {
 .color-grid:hover .color-grid-open {
   opacity: 1;
 }
+
+@keyframes shake {
+  0% {
+    transform: rotate(-1deg);
+    animation-timing-function: ease-in;
+  }
+
+  50% {
+    transform: rotate(1.5deg);
+    animation-timing-function: ease-out;
+  }
+}

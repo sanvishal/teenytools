@@ -5,10 +5,14 @@ import { FiAlertCircle, FiCheckCircle } from "react-icons/fi";
 
 export const AccessibilityChart = ({
   color,
-  direction = "row",
+  direction = "column",
+  fullHeight = false,
+  noPadding = false,
 }: {
   color: string;
   direction?: "row" | "column";
+  fullHeight?: boolean;
+  noPadding?: boolean;
 }): ReactElement => {
   const darkBgContrast = chroma.contrast("#131313", color);
   const lightBgContrast = chroma.contrast("#fefefe", color);
@@ -45,11 +49,16 @@ export const AccessibilityChart = ({
   return (
     <Stack
       w="full"
-      p={{ md: 2, sm: 2 }}
-      direction={{ lg: "column", xl: "row", base: "column" }}
+      h={fullHeight ? "full" : "unset"}
+      p={{ md: noPadding ? 0 : 2, sm: 2 }}
+      direction={{
+        lg: direction,
+        xl: direction === "column" ? "row" : "column",
+        base: direction,
+      }}
       spacing={0}
     >
-      <Center flexGrow={1} h={170} bgColor={"#131313"}>
+      <Center flexGrow={1} h={fullHeight ? "full" : 170} bgColor={"#131313"}>
         <VStack spacing={0}>
           <Text
             fontSize="x-large"
@@ -78,7 +87,7 @@ export const AccessibilityChart = ({
           </Center>
         </VStack>
       </Center>
-      <Center flexGrow={1} h={170} bgColor={color}>
+      <Center flexGrow={1} h={fullHeight ? "full" : 170} bgColor={color}>
         <VStack spacing={0}>
           <Text
             fontSize="x-large"
@@ -112,7 +121,7 @@ export const AccessibilityChart = ({
           </Center>
         </VStack>
       </Center>
-      <Center flexGrow={1} h={170} bgColor={"#fefefe"}>
+      <Center flexGrow={1} h={fullHeight ? "full" : 170} bgColor={"#fefefe"}>
         <VStack spacing={0}>
           <Text
             fontSize="x-large"

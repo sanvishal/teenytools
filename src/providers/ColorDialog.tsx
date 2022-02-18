@@ -26,7 +26,14 @@ import { ColorGridContainer } from "../components/ColorGrid";
 import { FiCopy, FiShare2 } from "react-icons/fi";
 import { ColoredToast } from "../components/ColoredToast";
 import { CopyableColor } from "../components/CopyableColor";
-import { getRGBA, getHSLA, getHSVA, getGL } from "../utils/colorUtils";
+import {
+  getRGBA,
+  getHSLA,
+  getHSVA,
+  getGL,
+  getHighlightColor,
+  getTextColor,
+} from "../utils/colorUtils";
 
 // @ts-ignore
 export const ColorDialogContext = createContext<{
@@ -48,10 +55,6 @@ export const ColorDialogProvider = ({
   const onClose = () => {
     window.location.hash = "";
     setIsOpen(false);
-  };
-
-  const getTextColor = () => {
-    return chroma.contrast(color, "#333333") > 4.5 ? "#333333" : "#fefefe";
   };
 
   const copyColor = (
@@ -76,12 +79,6 @@ export const ColorDialogProvider = ({
         ),
       });
     }
-  };
-
-  const getHighlightColor = () => {
-    return chroma.contrast(color, "#333333") > 4.5
-      ? chroma(color).darken(0.5).hex()
-      : chroma(color).brighten(0.5).hex();
   };
 
   const getURLToShare = () => {
@@ -110,8 +107,8 @@ export const ColorDialogProvider = ({
         size="6xl"
       >
         <AlertDialogOverlay
-          bg={chroma(color).alpha(0.1).css()}
-          backdropFilter={"blur(2px)"}
+          bg={chroma(color).alpha(0.2).css()}
+          // backdropFilter={"blur(2px)"}
         >
           <AlertDialogContent
             bg={color}
@@ -122,7 +119,7 @@ export const ColorDialogProvider = ({
             <AlertDialogHeader
               fontSize="xx-large"
               fontWeight="bold"
-              color={getTextColor()}
+              color={getTextColor(color)}
               style={{ overflow: "hidden" }}
             >
               <Flex align={"center"} gap={1}>
@@ -132,7 +129,7 @@ export const ColorDialogProvider = ({
                   flexGrow={1}
                   cursor="pointer"
                   _hover={{
-                    background: getHighlightColor(),
+                    background: getHighlightColor(color),
                   }}
                   onClick={() => {
                     copyColor(color);
@@ -148,7 +145,7 @@ export const ColorDialogProvider = ({
                 <Center
                   cursor="pointer"
                   _hover={{
-                    background: getHighlightColor(),
+                    background: getHighlightColor(color),
                   }}
                   onClick={() => {
                     copyColor(getURLToShare(), "link copied to clipboard ✨");
@@ -177,20 +174,20 @@ export const ColorDialogProvider = ({
               >
                 <VStack align={"flex-start"} spacing={4} m={1} w="100%">
                   <ColorGridContainer
-                    titleColor={getTextColor()}
-                    highlightColor={getHighlightColor()}
+                    titleColor={getTextColor(color)}
+                    highlightColor={getHighlightColor(color)}
                     title="Shades"
                     colArray={harmonizer.shades(color, 5)}
                   />
                   <ColorGridContainer
-                    titleColor={getTextColor()}
-                    highlightColor={getHighlightColor()}
+                    titleColor={getTextColor(color)}
+                    highlightColor={getHighlightColor(color)}
                     title="Tints"
                     colArray={harmonizer.tints(color, 5)}
                   />
                   <ColorGridContainer
-                    titleColor={getTextColor()}
-                    highlightColor={getHighlightColor()}
+                    titleColor={getTextColor(color)}
+                    highlightColor={getHighlightColor(color)}
                     title="Tones"
                     colArray={harmonizer.tones(color, 5)}
                   />
@@ -205,8 +202,8 @@ export const ColorDialogProvider = ({
                   <CopyableColor
                     label="HEX"
                     isLong
-                    textColor={getTextColor()}
-                    bgColor={getHighlightColor()}
+                    textColor={getTextColor(color)}
+                    bgColor={getHighlightColor(color)}
                     textToDisplay={color}
                     onClick={() => {
                       copyColor(color);
@@ -215,8 +212,8 @@ export const ColorDialogProvider = ({
                   <CopyableColor
                     label="HEX"
                     isLong
-                    textColor={getTextColor()}
-                    bgColor={getHighlightColor()}
+                    textColor={getTextColor(color)}
+                    bgColor={getHighlightColor(color)}
                     textToDisplay={"0x" + color}
                     onClick={() => {
                       copyColor("0x" + color.substring(1));
@@ -225,8 +222,8 @@ export const ColorDialogProvider = ({
                   <CopyableColor
                     label="RGB"
                     isLong
-                    textColor={getTextColor()}
-                    bgColor={getHighlightColor()}
+                    textColor={getTextColor(color)}
+                    bgColor={getHighlightColor(color)}
                     textToDisplay={getRGBA(color)}
                     onClick={() => {
                       copyColor(`rgba(${getRGBA(color)})`);
@@ -235,8 +232,8 @@ export const ColorDialogProvider = ({
                   <CopyableColor
                     label="HSL"
                     isLong
-                    textColor={getTextColor()}
-                    bgColor={getHighlightColor()}
+                    textColor={getTextColor(color)}
+                    bgColor={getHighlightColor(color)}
                     textToDisplay={getHSLA(color)}
                     onClick={() => {
                       copyColor(getHSLA(color));
@@ -245,8 +242,8 @@ export const ColorDialogProvider = ({
                   <CopyableColor
                     label="HSV"
                     isLong
-                    textColor={getTextColor()}
-                    bgColor={getHighlightColor()}
+                    textColor={getTextColor(color)}
+                    bgColor={getHighlightColor(color)}
                     textToDisplay={getHSVA(color)}
                     onClick={() => {
                       copyColor(getHSVA(color));
@@ -255,8 +252,8 @@ export const ColorDialogProvider = ({
                   <CopyableColor
                     label="LAB"
                     isLong
-                    textColor={getTextColor()}
-                    bgColor={getHighlightColor()}
+                    textColor={getTextColor(color)}
+                    bgColor={getHighlightColor(color)}
                     textToDisplay={chroma(color)
                       .lab()
                       .map((x: number) => x.toFixed(3))
@@ -273,8 +270,8 @@ export const ColorDialogProvider = ({
                   <CopyableColor
                     label="LCH"
                     isLong
-                    textColor={getTextColor()}
-                    bgColor={getHighlightColor()}
+                    textColor={getTextColor(color)}
+                    bgColor={getHighlightColor(color)}
                     textToDisplay={chroma(color)
                       .lch()
                       .map((x: number) => x.toFixed(3))
@@ -291,8 +288,8 @@ export const ColorDialogProvider = ({
                   <CopyableColor
                     label="GLS"
                     isLong
-                    textColor={getTextColor()}
-                    bgColor={getHighlightColor()}
+                    textColor={getTextColor(color)}
+                    bgColor={getHighlightColor(color)}
                     textToDisplay={getGL(color)}
                     onClick={() => {
                       copyColor(getGL(color));
