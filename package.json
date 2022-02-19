@@ -16,6 +16,7 @@
     "chroma-js": "^2.4.2",
     "color-harmony": "^0.3.0",
     "framer-motion": "^4.1.17",
+    "nanoid": "^3.3.1",
     "nice-color-palettes": "^3.0.0",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.0",

@@ -4,7 +4,7 @@ const MenuTheme: ComponentStyleConfig = {
   parts: ["menu", "item", "list"],
   baseStyle: {
     list: {
-      background: "cardBg",
+      background: "dialogBg",
       borderRadius: "6px",
       py: "4px",
     },
@@ -15,7 +15,7 @@ const MenuTheme: ComponentStyleConfig = {
       marginLeft: "4px",
       fontWeight: "medium",
       color: "text",
-      background: "cardBg",
+      background: "dialogBg",
       borderRadius: "3px",
       _selected: {
         borderRadius: "3px",

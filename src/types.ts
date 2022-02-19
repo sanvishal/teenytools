@@ -1,4 +1,5 @@
 export type ColorPalette = {
+  id: string;
   name: string;
-  palette: string[];
+  colors: string[];
 };

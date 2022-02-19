@@ -1,29 +1,35 @@
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Box,
+  Button,
+  ButtonGroup,
   Center,
   Collapse,
+  Editable,
+  EditableInput,
+  EditablePreview,
   Flex,
+  forwardRef,
   HStack,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Modal,
   ModalBody,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  SimpleGrid,
   Stack,
   Text,
   Tooltip,
   useBreakpointValue,
   useDisclosure,
+  useEditableControls,
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { ReactElement, useEffect, useMemo, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import { reorderItems } from "../utils/utils";
 import {
   DragDropContext,
@@ -32,18 +38,100 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { ColorPicker } from "./ColorPicker";
-import { FiChevronDown, FiCopy, FiEdit, FiPlus, FiTrash } from "react-icons/fi";
-import { MdColorLens } from "react-icons/md";
+import {
+  FiCheck,
+  FiChevronDown,
+  FiCopy,
+  FiPlus,
+  FiSave,
+  FiTrash,
+  FiX,
+} from "react-icons/fi";
+import { MdColorLens, MdDragHandle } from "react-icons/md";
 import chroma from "chroma-js";
 import { AccessibilityChart } from "./AccessibilityChart";
 import { getHighlightColor, getTextColor } from "../utils/colorUtils";
 import { ColoredToast } from "./ColoredToast";
+import { addPaletteToLS } from "../utils/localStorageUtils";
 
 const makeArrayOfColors = (palette: string[]) => {
   return palette.map((col: string, idx: number) => {
     return { id: String(idx), color: col };
   });
 };
+
+const EditableControls = forwardRef((props, ref) => {
+  const {
+    isEditing,
+    getSubmitButtonProps,
+    getCancelButtonProps,
+    getEditButtonProps,
+  } = useEditableControls();
+
+  // ts ignoring because chakraui is bugging out on spreading props
+  return isEditing ? (
+    <ButtonGroup justifyContent="center" size="sm">
+      {/*
+        // @ts-ignore */}
+      <IconButton
+        size="md"
+        fontSize="x-large"
+        cursor="pointer"
+        borderRadius={6}
+        px={4}
+        transition="background 0.2s ease-in-out"
+        color="green.400"
+        _hover={{
+          background: "dialogFg",
+        }}
+        {...getSubmitButtonProps()}
+        icon={<FiCheck />}
+      />
+      {/*
+        // @ts-ignore */}
+      <IconButton
+        size="md"
+        fontSize="x-large"
+        cursor="pointer"
+        borderRadius={6}
+        px={4}
+        transition="background 0.2s ease-in-out"
+        color="red.400"
+        _hover={{
+          background: "dialogFg",
+        }}
+        {...getCancelButtonProps()}
+        icon={<FiX />}
+      />
+    </ButtonGroup>
+  ) : (
+    <Tooltip
+      label="Click to save Palette"
+      fontWeight="bold"
+      hasArrow
+      bg="toastBg"
+      color="text"
+    >
+      {/*
+        // @ts-ignore */}
+      <IconButton
+        size="md"
+        fontSize="x-large"
+        cursor="pointer"
+        borderRadius={6}
+        px={4}
+        transition="background 0.2s ease-in-out"
+        _hover={{
+          background: "dialogFg",
+        }}
+        ref={ref}
+        autoFocus
+        {...getEditButtonProps()}
+        icon={<FiSave />}
+      />
+    </Tooltip>
+  );
+});
 
 export const PaletteDialog = ({
   onClose,
@@ -57,6 +145,8 @@ export const PaletteDialog = ({
   // const { colorMode } = useColorMode();
   const [palette, setPalette] = useState(makeArrayOfColors(colors));
   const { isOpen: isEditorOpen, onToggle: onEditorToggle } = useDisclosure();
+  const [paletteName, setPaletteName] = useState("");
+  const [paletteId, setPaletteId] = useState("");
   const [selectedColorId, setSelectedColorId] = useState(palette[0].id);
   const [color, setColor] = useState(colors[0]);
 
@@ -93,6 +183,10 @@ export const PaletteDialog = ({
   const onColorChange = (col: any) => {
     setColor(col.hex);
     editColorForSelectedId(col.hex);
+  };
+
+  const getSelectedColorById = () => {
+    return palette.find((col) => col.id === selectedColorId);
   };
 
   useEffect(() => {
@@ -194,13 +288,15 @@ export const PaletteDialog = ({
     md: "horizontal",
   });
 
+  const focusRef = useRef();
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="6xl" motionPreset="scale">
+    <Modal isOpen={isOpen} onClose={onClose} size="6xl" autoFocus={false}>
       <ModalOverlay>
         <ModalContent
           borderRadius={8}
           border="dialogBorder"
           bg="dialogBg"
+
           // backdropFilter={setDualColors(
           //   colorMode,
           //   "saturate(300%) blur(25px)",
@@ -212,7 +308,47 @@ export const PaletteDialog = ({
             fontWeight="bold"
             // style={{ overflow: "hidden" }}
           >
-            Palette
+            <Editable
+              defaultValue="Palette"
+              startWithEditView={false}
+              onChange={(val) => {
+                setPaletteName(val);
+                console.log(val);
+              }}
+              onSubmit={(val) => {
+                setPaletteId(
+                  addPaletteToLS({
+                    name: paletteName,
+                    colors: palette.map((col) => col.color),
+                  })
+                );
+              }}
+            >
+              <HStack justify="space-between">
+                <EditablePreview flexGrow={1} />
+                <EditableInput flexGrow={1} background="dialogFg" px={2} />
+                <Menu placement="bottom-end">
+                  <MenuButton
+                    as={Button}
+                    bg="dialogFg"
+                    gap={0}
+                    rightIcon={
+                      <FiChevronDown style={{ marginBottom: "3px" }} />
+                    }
+                  >
+                    Save
+                  </MenuButton>
+                  <MenuList minW={"200px"} fontSize="medium">
+                    <MenuItem command="⌘+S" width="190px">
+                      Save
+                    </MenuItem>
+                    <MenuItem command="⌘+Shift+S" width="190px">
+                      Save New
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+              </HStack>
+            </Editable>
           </ModalHeader>
           <ModalBody>
             <Box>
@@ -328,8 +464,8 @@ export const PaletteDialog = ({
                                     >
                                       <FiCopy strokeWidth={3} />
                                     </Box>
-                                    <Box opacity={0} p={2}>
-                                      <FiCopy strokeWidth={3} />
+                                    <Box p={2} color={getTextColor(item.color)}>
+                                      <MdDragHandle />
                                     </Box>
                                   </VStack>
                                   <Center
@@ -371,15 +507,19 @@ export const PaletteDialog = ({
                 justify="space-between"
                 px={4}
                 transition="background 0.2s ease-in-out"
-                background={isEditorOpen ? "dialogFg" : "transparent"}
-                _hover={{
-                  background: "dialogFg",
-                }}
+                background="dialogFg"
                 onClick={onEditorToggle}
               >
-                <Box>
+                <HStack spacing={3}>
+                  <Box
+                    bg={getSelectedColorById()?.color}
+                    w={6}
+                    h={6}
+                    mb={1}
+                    borderRadius={6}
+                  ></Box>
                   <Text fontSize="2xl">Edit Color</Text>
-                </Box>
+                </HStack>
                 <Center
                   transition="transform 0.2s ease-in-out"
                   style={{
