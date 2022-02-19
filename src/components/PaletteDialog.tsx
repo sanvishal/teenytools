@@ -1,20 +1,16 @@
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Box,
   Button,
-  ButtonGroup,
   Center,
   Collapse,
-  Editable,
-  EditableInput,
-  EditablePreview,
   Flex,
-  forwardRef,
   HStack,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Modal,
   ModalBody,
   ModalContent,
@@ -25,11 +21,10 @@ import {
   Tooltip,
   useBreakpointValue,
   useDisclosure,
-  useEditableControls,
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 import { reorderItems } from "../utils/utils";
 import {
   DragDropContext,
@@ -39,99 +34,29 @@ import {
 } from "react-beautiful-dnd";
 import { ColorPicker } from "./ColorPicker";
 import {
-  FiCheck,
   FiChevronDown,
   FiCopy,
   FiPlus,
-  FiSave,
+  FiShare2,
   FiTrash,
-  FiX,
 } from "react-icons/fi";
 import { MdColorLens, MdDragHandle } from "react-icons/md";
 import chroma from "chroma-js";
 import { AccessibilityChart } from "./AccessibilityChart";
-import { getHighlightColor, getTextColor } from "../utils/colorUtils";
+import {
+  getArrayColorsToCopy,
+  getHexArrayColorsToCopy,
+  getHighlightColor,
+  getTextColor,
+} from "../utils/colorUtils";
 import { ColoredToast } from "./ColoredToast";
-import { addPaletteToLS } from "../utils/localStorageUtils";
+import { CodeBlock } from "./CodeBlock";
 
 const makeArrayOfColors = (palette: string[]) => {
   return palette.map((col: string, idx: number) => {
     return { id: String(idx), color: col };
   });
 };
-
-const EditableControls = forwardRef((props, ref) => {
-  const {
-    isEditing,
-    getSubmitButtonProps,
-    getCancelButtonProps,
-    getEditButtonProps,
-  } = useEditableControls();
-
-  // ts ignoring because chakraui is bugging out on spreading props
-  return isEditing ? (
-    <ButtonGroup justifyContent="center" size="sm">
-      {/*
-        // @ts-ignore */}
-      <IconButton
-        size="md"
-        fontSize="x-large"
-        cursor="pointer"
-        borderRadius={6}
-        px={4}
-        transition="background 0.2s ease-in-out"
-        color="green.400"
-        _hover={{
-          background: "dialogFg",
-        }}
-        {...getSubmitButtonProps()}
-        icon={<FiCheck />}
-      />
-      {/*
-        // @ts-ignore */}
-      <IconButton
-        size="md"
-        fontSize="x-large"
-        cursor="pointer"
-        borderRadius={6}
-        px={4}
-        transition="background 0.2s ease-in-out"
-        color="red.400"
-        _hover={{
-          background: "dialogFg",
-        }}
-        {...getCancelButtonProps()}
-        icon={<FiX />}
-      />
-    </ButtonGroup>
-  ) : (
-    <Tooltip
-      label="Click to save Palette"
-      fontWeight="bold"
-      hasArrow
-      bg="toastBg"
-      color="text"
-    >
-      {/*
-        // @ts-ignore */}
-      <IconButton
-        size="md"
-        fontSize="x-large"
-        cursor="pointer"
-        borderRadius={6}
-        px={4}
-        transition="background 0.2s ease-in-out"
-        _hover={{
-          background: "dialogFg",
-        }}
-        ref={ref}
-        autoFocus
-        {...getEditButtonProps()}
-        icon={<FiSave />}
-      />
-    </Tooltip>
-  );
-});
 
 export const PaletteDialog = ({
   onClose,
@@ -144,11 +69,11 @@ export const PaletteDialog = ({
 }): ReactElement => {
   // const { colorMode } = useColorMode();
   const [palette, setPalette] = useState(makeArrayOfColors(colors));
+  const colorsMemo = useMemo(() => palette.map((col) => col.color), [palette]);
   const { isOpen: isEditorOpen, onToggle: onEditorToggle } = useDisclosure();
-  const [paletteName, setPaletteName] = useState("");
-  const [paletteId, setPaletteId] = useState("");
   const [selectedColorId, setSelectedColorId] = useState(palette[0].id);
   const [color, setColor] = useState(colors[0]);
+  const [isCopyDialogOpen, setIsCopyDialogOpen] = useState(false);
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
@@ -261,8 +186,12 @@ export const PaletteDialog = ({
   };
 
   const toast = useToast();
-  const copyColor = (col: string) => {
-    navigator.clipboard.writeText(col);
+  const copyColor = (
+    col: string,
+    thingToCopy?: string,
+    message: string = "copied to clipboard 🎉"
+  ) => {
+    navigator.clipboard.writeText(thingToCopy || col);
     if (!toast.isActive("color-toast" + col)) {
       toast({
         id: "color-toast" + col,
@@ -276,11 +205,22 @@ export const PaletteDialog = ({
           <ColoredToast
             bgColor={chroma(col).alpha(0.2).hex()}
             actualColor={col}
-            message="copied to clipboard 🎉"
+            message={message}
           />
         ),
       });
     }
+  };
+
+  const getURLToShare = () => {
+    return (
+      window.location.protocol +
+      "//" +
+      window.location.host +
+      window.location.pathname +
+      "?p=" +
+      palette.map((col) => col.color.substring(1)).join("-")
+    );
   };
 
   const paletteDirection = useBreakpointValue<"horizontal" | "vertical">({
@@ -288,7 +228,6 @@ export const PaletteDialog = ({
     md: "horizontal",
   });
 
-  const focusRef = useRef();
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl" autoFocus={false}>
       <ModalOverlay>
@@ -308,47 +247,79 @@ export const PaletteDialog = ({
             fontWeight="bold"
             // style={{ overflow: "hidden" }}
           >
-            <Editable
-              defaultValue="Palette"
-              startWithEditView={false}
-              onChange={(val) => {
-                setPaletteName(val);
-                console.log(val);
-              }}
-              onSubmit={(val) => {
-                setPaletteId(
-                  addPaletteToLS({
-                    name: paletteName,
-                    colors: palette.map((col) => col.color),
-                  })
-                );
-              }}
-            >
-              <HStack justify="space-between">
-                <EditablePreview flexGrow={1} />
-                <EditableInput flexGrow={1} background="dialogFg" px={2} />
-                <Menu placement="bottom-end">
-                  <MenuButton
-                    as={Button}
-                    bg="dialogFg"
-                    gap={0}
-                    rightIcon={
-                      <FiChevronDown style={{ marginBottom: "3px" }} />
-                    }
-                  >
-                    Save
-                  </MenuButton>
-                  <MenuList minW={"200px"} fontSize="medium">
-                    <MenuItem command="⌘+S" width="190px">
-                      Save
-                    </MenuItem>
-                    <MenuItem command="⌘+Shift+S" width="190px">
-                      Save New
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
+            <HStack justify="space-between">
+              <Box>Palette</Box>
+              <HStack>
+                <Box
+                  cursor="pointer"
+                  borderRadius={6}
+                  p={2}
+                  transition="background 0.2s ease-in-out"
+                  _hover={{ background: "dialogFg" }}
+                  onClick={() => {
+                    copyColor(
+                      color,
+                      getURLToShare(),
+                      "copied palette to clipboard 🎉"
+                    );
+                  }}
+                >
+                  <FiShare2 />
+                </Box>
+                <Box
+                  cursor="pointer"
+                  borderRadius={6}
+                  p={2}
+                  transition="background 0.2s ease-in-out"
+                  _hover={{ background: "dialogFg" }}
+                  onClick={() => {
+                    setIsCopyDialogOpen(true);
+                    // copyColor(
+                    //   color,
+                    //   getURLToShare(),
+                    //   "copied palette to clipboard 🎉"
+                    // );
+                  }}
+                >
+                  <FiCopy />
+                </Box>
+                <AlertDialog
+                  size="4xl"
+                  isOpen={isCopyDialogOpen}
+                  leastDestructiveRef={undefined}
+                  onClose={() => {
+                    setIsCopyDialogOpen(false);
+                  }}
+                >
+                  <AlertDialogOverlay>
+                    <AlertDialogContent bg="dialogBg">
+                      <AlertDialogHeader fontSize="xx-large" fontWeight="bold">
+                        Copy Palette
+                      </AlertDialogHeader>
+
+                      <AlertDialogBody>
+                        <VStack justify="flex-start" w="100%" spacing={4}>
+                          <CodeBlock
+                            title="Array"
+                            code={getArrayColorsToCopy(colorsMemo)}
+                          />
+                          <CodeBlock
+                            title="Normal"
+                            code={colorsMemo
+                              .map((col) => col.substring(1))
+                              .join(",")}
+                          />
+                          <CodeBlock
+                            title="Hex Array"
+                            code={getHexArrayColorsToCopy(colorsMemo)}
+                          />
+                        </VStack>
+                      </AlertDialogBody>
+                    </AlertDialogContent>
+                  </AlertDialogOverlay>
+                </AlertDialog>
               </HStack>
-            </Editable>
+            </HStack>
           </ModalHeader>
           <ModalBody>
             <Box>
@@ -523,7 +494,9 @@ export const PaletteDialog = ({
                 <Center
                   transition="transform 0.2s ease-in-out"
                   style={{
-                    transform: isEditorOpen ? "rotate(180deg)" : "rotate(0deg)",
+                    transform: !isEditorOpen
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
                   }}
                 >
                   <FiChevronDown style={{ width: "30px", height: "30px" }} />

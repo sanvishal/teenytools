@@ -293,6 +293,16 @@ const getHighlightColor = (color: string) => {
     : chroma(color).brighten(0.5).hex();
 };
 
+const getArrayColorsToCopy = (palette: string[]) => {
+  return `[${palette.map((col) => `'${col}'`).join(", ")}]`;
+};
+
+const getHexArrayColorsToCopy = (palette: string[]) => {
+  return `[${palette
+    .map((col) => `0x${col.substring(1).toUpperCase()}FF`)
+    .join(", ")}]`;
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export {
   generateBaseColors,
@@ -309,4 +319,6 @@ export {
   getRGBA,
   getTextColor,
   getHighlightColor,
+  getArrayColorsToCopy,
+  getHexArrayColorsToCopy,
 };

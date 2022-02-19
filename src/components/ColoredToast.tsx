@@ -5,10 +5,12 @@ export const ColoredToast = ({
   bgColor,
   actualColor,
   message,
+  showTile = true,
 }: {
   bgColor: string;
-  actualColor: string;
+  actualColor?: string;
   message: string;
+  showTile?: boolean;
 }): ReactElement => {
   return (
     <HStack
@@ -19,14 +21,17 @@ export const ColoredToast = ({
       spacing={3}
       backdropBlur="20px"
     >
-      <Box
-        userSelect={"none"}
-        bg={actualColor}
-        w={4}
-        h={4}
-        borderRadius={3}
-        boxShadow={"md"}
-      ></Box>
+      {showTile && (
+        <Box
+          userSelect={"none"}
+          bg={actualColor}
+          w={4}
+          h={4}
+          borderRadius={3}
+          boxShadow={"md"}
+        ></Box>
+      )}
+
       <Box userSelect={"none"} color="text">
         {message}
       </Box>

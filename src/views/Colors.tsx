@@ -1,4 +1,4 @@
-import { ReactElement, useContext, useMemo, useState } from "react";
+import { ReactElement, useContext, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Box,
@@ -30,6 +30,8 @@ import { CopyableColor } from "../components/CopyableColor";
 import { ColorDialogContext } from "../providers/ColorDialog";
 import { ColoredToast } from "../components/ColoredToast";
 import { PaletteDialog } from "../components/PaletteDialog";
+import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const MotionBox = motion(Box);
 
@@ -40,6 +42,16 @@ export const Colors = (): ReactElement => {
     setDialogColor(window.location.hash || "orange");
     openColorDialog();
   }
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  console.log(searchParams.get("p"));
+  useEffect(() => {
+    const palette = searchParams.get("p");
+    if (palette) {
+      setIsPaletteDialogOpen(true);
+    }
+  }, [searchParams.get("p")]);
+  const [isPaletteDialogOpen, setIsPaletteDialogOpen] = useState(false);
   const [color, setColor] = useState<any>(
     chroma.valid(window.location.hash) ? window.location.hash : "orange"
   );
@@ -355,6 +367,19 @@ export const Colors = (): ReactElement => {
               )}
             /> */}
           </VStack>
+          <PaletteDialog
+            isOpen={isPaletteDialogOpen}
+            onClose={() => {
+              setIsPaletteDialogOpen(false);
+              navigate("/colors");
+            }}
+            colors={
+              searchParams
+                ?.get("p")
+                ?.split("-")
+                ?.map((col) => "#" + col) || ["#ffffff"]
+            }
+          />
         </Box>
       </Flex>
     </MotionBox>
