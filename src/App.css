@@ -99,14 +99,11 @@ body {
   opacity: 1;
 }
 
-@keyframes shake {
-  0% {
-    transform: rotate(-1deg);
-    animation-timing-function: ease-in;
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
   }
-
-  50% {
-    transform: rotate(1.5deg);
-    animation-timing-function: ease-out;
+  to {
+    transform: rotate(360deg);
   }
 }

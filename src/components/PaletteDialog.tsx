@@ -69,11 +69,18 @@ export const PaletteDialog = ({
 }): ReactElement => {
   // const { colorMode } = useColorMode();
   const [palette, setPalette] = useState(makeArrayOfColors(colors));
-  const colorsMemo = useMemo(() => palette.map((col) => col.color), [palette]);
+  let colorsMemo = useMemo(() => palette.map((col) => col.color), [palette]);
   const { isOpen: isEditorOpen, onToggle: onEditorToggle } = useDisclosure();
   const [selectedColorId, setSelectedColorId] = useState(palette[0].id);
   const [color, setColor] = useState(colors[0]);
   const [isCopyDialogOpen, setIsCopyDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setPalette(makeArrayOfColors(colors));
+      setColor(colors[0]);
+    }
+  }, [isOpen]);
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
@@ -229,7 +236,14 @@ export const PaletteDialog = ({
   });
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="6xl" autoFocus={false}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="6xl"
+      autoFocus={false}
+      isCentered={paletteDirection === "horizontal"}
+      closeOnEsc
+    >
       <ModalOverlay>
         <ModalContent
           borderRadius={8}
@@ -297,7 +311,7 @@ export const PaletteDialog = ({
                         Copy Palette
                       </AlertDialogHeader>
 
-                      <AlertDialogBody>
+                      <AlertDialogBody mb={4}>
                         <VStack justify="flex-start" w="100%" spacing={4}>
                           <CodeBlock
                             title="Array"

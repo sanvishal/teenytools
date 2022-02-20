@@ -38,14 +38,30 @@ const theme = extendTheme({
         default: "gray.100",
         _dark: "#272727",
       },
+      cmdBg: {
+        default: "rgba(255,255,255,0.86)",
+        _dark: "rgba(22,22,22,0.86)",
+      },
+      cmdFg: {
+        default: "rgba(244,244,244,0.86)",
+        _dark: "rgba(40,40,40,0.86)",
+      },
+      canvasBg: {
+        default: "gray.100",
+        _dark: "#1a1a1a",
+      },
+      canvasDots: {
+        default: "gray.200",
+        _dark: "#272727",
+      },
     },
     boxShadow: {
       md: "0 8px 30px #0000001f",
     },
     backdropFilter: {
       dialogFilter: {
-        default: "saturate(300%) blur(25px)",
-        _dark: "blur(25px)",
+        default: "saturate(300%) blur(15px)",
+        _dark: "blur(15px)",
       },
     },
     borders: {

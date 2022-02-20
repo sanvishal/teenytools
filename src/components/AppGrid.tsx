@@ -14,11 +14,12 @@ const apps = [
     name: "Palettes",
     link: "/palettes",
     description:
-      "A Local Repository to create, save, search, share and export your favorite palettes",
+      "A Local Repository use, share and export your favorite palettes",
   },
   {
-    name: "Gradiants",
-    description: "Generate a vivid Gradiant with no grey dead-zone",
+    name: "Placeholders",
+    link: "/placeholders",
+    description: "Generate, customize and export various placeholders",
   },
   {
     name: "Blobber",

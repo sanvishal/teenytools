@@ -10,7 +10,7 @@ const MenuTheme: ComponentStyleConfig = {
     },
     item: {
       py: "4px",
-      // width: "90px",
+      width: "calc(100% - 8px)",
       marginRight: "0px",
       marginLeft: "4px",
       fontWeight: "medium",

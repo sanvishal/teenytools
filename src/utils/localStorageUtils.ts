@@ -5,12 +5,12 @@ const putData = (where: string, data: any) => {
   localStorage.setItem(where, JSON.stringify(data));
 };
 
-const getData = (where: string) => {
+const getLSData = (where: string) => {
   return JSON.parse(localStorage.getItem(where) || "[]");
 };
 
 const pushData = (where: string, data: any) => {
-  const mainData = getData("pals");
+  const mainData = getLSData("pals");
   mainData.push(data);
   putData("pals", mainData);
 };
@@ -33,4 +33,23 @@ const addPaletteToLS = (
   return palId;
 };
 
-export { addPaletteToLS };
+const recentsSize = 5;
+const pushToRecentColors = (color: string, id: string) => {
+  if (!localStorage.getItem("recentCols")) {
+    putData("recentCols", []);
+  }
+
+  const newColor = {
+    id,
+    color,
+  };
+  const mainData = getLSData("recentCols") as Array<any>;
+  console.log(mainData);
+  if (mainData?.length > recentsSize) {
+    mainData.shift();
+  }
+  mainData.push(newColor);
+  putData("recentCols", mainData);
+};
+
+export { addPaletteToLS, pushToRecentColors, getLSData };

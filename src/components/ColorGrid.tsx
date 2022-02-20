@@ -6,11 +6,13 @@ import { PaletteDialog } from "./PaletteDialog";
 
 export const ColorGrid = ({
   colArray,
+  isCentered = false,
 }: {
   colArray: string[];
+  isCentered?: boolean;
 }): ReactElement => {
   return (
-    <HStack wrap={"wrap"}>
+    <HStack wrap={"wrap"} justifyContent={isCentered ? "center" : "unset"}>
       {colArray.map((color, idx) => (
         <Box
           key={idx}
@@ -33,6 +35,7 @@ export const ColorGridContainer = ({
   colArray,
   showControls = false,
   showRandomize = false,
+  isCentered = false,
   onOpenPalette,
   onIncrease,
   onDecrease,
@@ -44,6 +47,7 @@ export const ColorGridContainer = ({
   colArray: string[];
   showControls?: boolean;
   showRandomize?: boolean;
+  isCentered?: boolean;
   onOpenPalette?: () => void;
   onIncrease?: () => void;
   onDecrease?: () => void;
@@ -136,7 +140,8 @@ export const ColorGridContainer = ({
           </Box>
         )}
       </HStack>
-      <ColorGrid colArray={colArray} />
+      <ColorGrid colArray={colArray} isCentered={isCentered} />
+      {console.log(colArray)}
       <PaletteDialog
         isOpen={isPaletteDialogOpen}
         onClose={onPaletteDialogClose}

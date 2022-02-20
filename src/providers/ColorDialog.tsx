@@ -4,6 +4,7 @@ import {
   ReactElement,
   createContext,
   useState,
+  useEffect,
 } from "react";
 import {
   AlertDialog,
@@ -34,6 +35,8 @@ import {
   getHighlightColor,
   getTextColor,
 } from "../utils/colorUtils";
+import { nanoid } from "nanoid";
+import { useRecentColors } from "../hooks/useRecentColors";
 
 // @ts-ignore
 export const ColorDialogContext = createContext<{
@@ -52,6 +55,16 @@ export const ColorDialogProvider = ({
   const [color, setColor] = useState("#333333");
   const [isOpen, setIsOpen] = useState(false);
   const toast = useToast();
+  const { pushRecentColor } = useRecentColors();
+
+  useEffect(() => {
+    if (isOpen) {
+      const id = nanoid(10);
+      // pushToRecentColors(color, id);
+      pushRecentColor(id, color);
+    }
+  }, [isOpen]);
+
   const onClose = () => {
     window.location.hash = "";
     setIsOpen(false);
@@ -89,6 +102,14 @@ export const ColorDialogProvider = ({
       window.location.pathname +
       color
     );
+  };
+
+  const hexAlphaPadding = () => {
+    let hex = Math.round(chroma(color).alpha() * 255).toString(16);
+    if (hex.length < 2) {
+      return "0" + hex;
+    }
+    return hex;
   };
 
   return (
@@ -214,9 +235,11 @@ export const ColorDialogProvider = ({
                     isLong
                     textColor={getTextColor(color)}
                     bgColor={getHighlightColor(color)}
-                    textToDisplay={"0x" + color}
+                    textToDisplay={
+                      "0x" + "FF" + color.substring(1).toUpperCase()
+                    }
                     onClick={() => {
-                      copyColor("0x" + color.substring(1));
+                      copyColor("0x" + "FF" + color.substring(1).toUpperCase());
                     }}
                   />
                   <CopyableColor

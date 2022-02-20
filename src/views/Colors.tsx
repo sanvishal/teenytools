@@ -44,7 +44,6 @@ export const Colors = (): ReactElement => {
   }
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  console.log(searchParams.get("p"));
   useEffect(() => {
     const palette = searchParams.get("p");
     if (palette) {
@@ -117,6 +116,14 @@ export const Colors = (): ReactElement => {
     setNicePaletteIdx(randRange(0, 30));
   };
 
+  const hexAlphaPadding = () => {
+    let hex = Math.round(chroma(color).alpha() * 255).toString(16);
+    if (hex.length < 2) {
+      return "0" + hex;
+    }
+    return hex;
+  };
+
   return (
     <MotionBox
       w="100%"
@@ -160,9 +167,18 @@ export const Colors = (): ReactElement => {
               />
               <CopyableColor
                 label="HEX"
-                textToDisplay={"0x" + hexIncAlpha.substring(1)}
+                textToDisplay={
+                  "0x" +
+                  hexAlphaPadding().toUpperCase() +
+                  hexNoAlpha.substring(1).toUpperCase()
+                }
                 onClick={() => {
-                  copyColor("0x" + hexIncAlpha.substring(1), color);
+                  copyColor(
+                    "0x" +
+                      hexAlphaPadding().toUpperCase() +
+                      hexNoAlpha.substring(1).toUpperCase(),
+                    color
+                  );
                 }}
               />
               <CopyableColor

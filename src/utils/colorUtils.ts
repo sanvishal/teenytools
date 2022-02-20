@@ -1,4 +1,4 @@
-import chroma from "chroma-js";
+import chroma, { InterpolationMode } from "chroma-js";
 import colorPalettes from "nice-color-palettes";
 import { randRange } from "./utils";
 
@@ -299,8 +299,27 @@ const getArrayColorsToCopy = (palette: string[]) => {
 
 const getHexArrayColorsToCopy = (palette: string[]) => {
   return `[${palette
-    .map((col) => `0x${col.substring(1).toUpperCase()}FF`)
+    .map((col) => `0xFF${col.substring(1).toUpperCase()}`)
     .join(", ")}]`;
+};
+
+const generateSteps = (
+  colors: string[],
+  coordinates: { x: number; y: number }[],
+  colorMode: InterpolationMode = "lrgb"
+) => {
+  const colorStops: any = [];
+  coordinates.forEach((coordinate) => {
+    const amount = coordinate.y;
+    const percent = coordinate.x * 100;
+    let color = chroma.mix(colors[0], colors[1], amount, colorMode).css("hsl");
+    if (Number(coordinate.x) !== 0 && Number(coordinate.x) !== 1) {
+      colorStops.push(`${color} ${+percent.toFixed(2)}%`);
+    } else {
+      colorStops.push(color);
+    }
+  });
+  return colorStops;
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -321,4 +340,5 @@ export {
   getHighlightColor,
   getArrayColorsToCopy,
   getHexArrayColorsToCopy,
+  generateSteps,
 };
