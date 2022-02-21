@@ -141,7 +141,6 @@ export const ColorGridContainer = ({
         )}
       </HStack>
       <ColorGrid colArray={colArray} isCentered={isCentered} />
-      {console.log(colArray)}
       <PaletteDialog
         isOpen={isPaletteDialogOpen}
         onClose={onPaletteDialogClose}

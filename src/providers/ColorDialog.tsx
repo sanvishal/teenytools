@@ -34,6 +34,7 @@ import {
   getGL,
   getHighlightColor,
   getTextColor,
+  getHSLACSS,
 } from "../utils/colorUtils";
 import { nanoid } from "nanoid";
 import { useRecentColors } from "../hooks/useRecentColors";
@@ -259,7 +260,7 @@ export const ColorDialogProvider = ({
                     bgColor={getHighlightColor(color)}
                     textToDisplay={getHSLA(color)}
                     onClick={() => {
-                      copyColor(getHSLA(color));
+                      copyColor(getHSLACSS(color));
                     }}
                   />
                   <CopyableColor
@@ -279,13 +280,13 @@ export const ColorDialogProvider = ({
                     bgColor={getHighlightColor(color)}
                     textToDisplay={chroma(color)
                       .lab()
-                      .map((x: number) => x.toFixed(3))
+                      .map((x: number) => x.toFixed(2))
                       .join(",")}
                     onClick={() => {
                       copyColor(
                         chroma(color)
                           .lab()
-                          .map((x: number) => x.toFixed(3))
+                          .map((x: number) => x.toFixed(2))
                           .join(",")
                       );
                     }}
@@ -297,13 +298,13 @@ export const ColorDialogProvider = ({
                     bgColor={getHighlightColor(color)}
                     textToDisplay={chroma(color)
                       .lch()
-                      .map((x: number) => x.toFixed(3))
+                      .map((x: number) => x.toFixed(2))
                       .join(",")}
                     onClick={() => {
                       copyColor(
                         chroma(color)
                           .lch()
-                          .map((x: number) => x.toFixed(3))
+                          .map((x: number) => x.toFixed(2))
                           .join(",")
                       );
                     }}

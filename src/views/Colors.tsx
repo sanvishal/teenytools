@@ -18,6 +18,7 @@ import {
   generateRandomHarmony,
   getGL,
   getHSLA,
+  getHSLACSS,
   getHSVA,
   getPalette2,
   getPalette4,
@@ -192,7 +193,7 @@ export const Colors = (): ReactElement => {
                 label="HSL"
                 textToDisplay={getHSLA(color)}
                 onClick={() => {
-                  copyColor(getHSLA(color), color);
+                  copyColor(getHSLACSS(color), color);
                 }}
               />
               <CopyableColor
@@ -207,14 +208,14 @@ export const Colors = (): ReactElement => {
                 textToDisplay={chroma(color)
                   .alpha(color.a || 1)
                   .lab()
-                  .map((x: number) => x.toFixed(3))
+                  .map((x: number) => x.toFixed(2))
                   .join(",")}
                 onClick={() => {
                   copyColor(
                     chroma(color)
                       .alpha(color.a || 1)
                       .lab()
-                      .map((x: number) => x.toFixed(3))
+                      .map((x: number) => x.toFixed(2))
                       .join(","),
                     color
                   );
@@ -225,14 +226,14 @@ export const Colors = (): ReactElement => {
                 textToDisplay={chroma(color)
                   .alpha(color.a || 1)
                   .lch()
-                  .map((x: number) => x.toFixed(3))
+                  .map((x: number) => x.toFixed(2))
                   .join(",")}
                 onClick={() => {
                   copyColor(
                     chroma(color)
                       .alpha(color.a || 1)
                       .lch()
-                      .map((x: number) => x.toFixed(3))
+                      .map((x: number) => x.toFixed(2))
                       .join(","),
                     color
                   );

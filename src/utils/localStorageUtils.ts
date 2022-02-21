@@ -44,7 +44,6 @@ const pushToRecentColors = (color: string, id: string) => {
     color,
   };
   const mainData = getLSData("recentCols") as Array<any>;
-  console.log(mainData);
   if (mainData?.length > recentsSize) {
     mainData.shift();
   }

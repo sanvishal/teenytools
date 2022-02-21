@@ -11,24 +11,34 @@ const convertHSLToHex = (hsl: number[]): string => {
 };
 
 const getHSVA = (col: any) => {
-  let hsv = chroma(col)
-    .hsv()
-    .map((x: number) => x.toFixed(3));
-  hsv.push(col.a);
+  let hsv: any = chroma(col).hsv();
+  hsv[0] = hsv[0] || 0;
+  hsv = hsv.map((x: number) => x.toFixed(2));
+  hsv.push(col.a || 1);
   return hsv.join(",").replace(/,(\s+)?$/, "");
 };
 
 const getHSLA = (col: any) => {
-  let hsl = chroma(col)
-    .hsl()
-    .map((x: number) => x.toFixed(3));
-  hsl.push(col.a);
+  let hsl: any = chroma(col).hsl();
+  hsl[0] = hsl[0] || 0;
+  hsl = hsl.map((x: number) => x.toFixed(2));
+  hsl.push(col.a || 1);
   return hsl.join(",").replace(/,(\s+)?$/, "");
+};
+
+const getHSLACSS = (col: any) => {
+  let hsl: any = chroma(col).hsl();
+  hsl[0] = hsl[0] || 0;
+  hsl[1] = hsl[1] * 100;
+  hsl[2] = hsl[2] * 100;
+  hsl = hsl.map((x: number) => x.toFixed(2));
+  hsl.push(col.a || 1);
+  return `hsla(${hsl[0] || 0},${hsl[1]}%,${hsl[2]}%,${hsl[3]})`;
 };
 
 const getRGBA = (col: any) => {
   let rgb = chroma(col).rgb();
-  rgb.push(col.a);
+  rgb.push(col.a || 1);
   return rgb.join(",").replace(/,(\s+)?$/, "");
 };
 
@@ -36,7 +46,7 @@ const getGL = (col: any) => {
   let gl = chroma(col)
     .gl()
     .map((x: number) => x.toFixed(3));
-  gl.push(col.a);
+  gl.push(col.a || 1);
   return gl.join("f,").replace(/,(\s+)?$/, "");
 };
 
@@ -334,6 +344,7 @@ export {
   generateRandomHarmony,
   getGL,
   getHSLA,
+  getHSLACSS,
   getHSVA,
   getRGBA,
   getTextColor,

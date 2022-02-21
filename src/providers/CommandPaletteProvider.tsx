@@ -16,8 +16,18 @@ import {
   useMatches,
   ActionImpl,
   ActionId,
+  useRegisterActions,
+  createAction,
+  useKBar,
 } from "kbar";
-import { forwardRef, Fragment, ReactElement, useEffect, useMemo } from "react";
+import {
+  forwardRef,
+  Fragment,
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { VscSymbolColor } from "react-icons/vsc";
 import { HiOutlineColorSwatch } from "react-icons/hi";
 import { FiBox, FiHome, FiImage, FiType } from "react-icons/fi";
@@ -25,6 +35,8 @@ import { useRecentColors } from "../hooks/useRecentColors";
 import { MdGradient } from "react-icons/md";
 import { ColoredToast } from "../components/ColoredToast";
 import { loremIpsum } from "lorem-ipsum";
+import chroma from "chroma-js";
+import { getHSLA, getHSLACSS, getRGBA } from "../utils/colorUtils";
 
 const ResultItem = forwardRef(
   (
@@ -80,8 +92,8 @@ function RenderResults() {
       items={results}
       onRender={({ item, active }) =>
         typeof item === "string" ? (
-          <Box px={2} bg="cmdBg" textTransform="uppercase">
-            <Text opacity={0.5} fontSize="smaller" h={5}>
+          <Box px={2} bg="cmdBg" textTransform="uppercase" fontWeight="bold">
+            <Text opacity={0.3} fontSize="smaller" h={5}>
               {item}
             </Text>
           </Box>
@@ -123,6 +135,190 @@ const animatorStyle = {
 
 const CommandBar = () => {
   // useRecentColors();
+  const [clipboardItem, setClipboardItem] = useState("");
+  useKBar(() => {
+    // console.log(state);
+    navigator.clipboard.readText().then((text) => {
+      if (chroma.valid(text)) {
+        setClipboardItem(chroma(text).hex().toUpperCase());
+      }
+    });
+  });
+
+  const getColorURL = (color: string) => {
+    return (
+      window.location.protocol + "//" + window.location.host + "/colors" + color
+    );
+  };
+
+  const getPaletteURL = (color: string) => {
+    return (
+      window.location.protocol +
+      "//" +
+      window.location.host +
+      "/colors/" +
+      `?p=${color.substring(1)}`
+    );
+  };
+
+  const toast = useToast();
+  const copyColor = (thingToCopy: string) => {
+    navigator.clipboard.writeText(thingToCopy);
+    if (!toast.isActive("color-toast" + thingToCopy)) {
+      toast({
+        id: "color-toast" + thingToCopy,
+        position: "top",
+        duration: 700,
+        containerStyle: {
+          minWidth: "unset",
+        },
+        render: () => (
+          <ColoredToast
+            bgColor={chroma(clipboardItem).alpha(0.2).hex()}
+            actualColor={chroma(clipboardItem).hex()}
+            message="copied to clipboard 🎉"
+          />
+        ),
+      });
+    }
+  };
+
+  const getColorActions = (): any => {
+    if (clipboardItem) {
+      return [
+        {
+          id: "clip-goto",
+          parent: "clipboard",
+          perform: () => {
+            window.location.href = getColorURL(clipboardItem);
+          },
+          name: clipboardItem
+            ? `Go to ${clipboardItem}`
+            : "No colors on clipboard",
+          keywords: "color colors copy clipboard share",
+          icon: clipboardItem ? (
+            <Box w={4} h={4} borderRadius={10} bg={clipboardItem}></Box>
+          ) : (
+            <HiOutlineColorSwatch
+              style={{
+                width: "17px",
+                height: "17px",
+                marginBottom: "5px",
+              }}
+            />
+          ),
+        },
+        {
+          id: "clip-css",
+          parent: "clipboard",
+          perform: () => {
+            copyColor(`rgba(${getRGBA(clipboardItem)})`);
+          },
+          name: clipboardItem
+            ? `copy RGBA rgba(${getRGBA(clipboardItem)})`
+            : "No colors on clipboard",
+          keywords: "color colors copy clipboard share rgba css",
+          icon: clipboardItem ? (
+            <Box w={4} h={4} borderRadius={10} bg={clipboardItem}></Box>
+          ) : (
+            <HiOutlineColorSwatch
+              style={{
+                width: "17px",
+                height: "17px",
+                marginBottom: "5px",
+              }}
+            />
+          ),
+        },
+        {
+          id: "clip-hsla",
+          parent: "clipboard",
+          perform: () => {
+            copyColor(getHSLACSS(clipboardItem));
+          },
+          name: clipboardItem
+            ? `copy HSLA ${getHSLACSS(clipboardItem)}`
+            : "No colors on clipboard",
+          keywords: "color colors copy clipboard share hsla css",
+          icon: clipboardItem ? (
+            <Box w={4} h={4} borderRadius={10} bg={clipboardItem}></Box>
+          ) : (
+            <HiOutlineColorSwatch
+              style={{
+                width: "17px",
+                height: "17px",
+                marginBottom: "5px",
+              }}
+            />
+          ),
+        },
+        {
+          id: "clip-pal",
+          parent: "clipboard",
+          perform: () => {
+            window.location.href = getPaletteURL(clipboardItem);
+          },
+          name: clipboardItem
+            ? `Start a palette with ${clipboardItem}`
+            : "No colors on clipboard",
+          keywords: "color colors copy clipboard share palette",
+          icon: clipboardItem ? (
+            <Box w={4} h={4} borderRadius={10} bg={clipboardItem}></Box>
+          ) : (
+            <HiOutlineColorSwatch
+              style={{
+                width: "17px",
+                height: "17px",
+                marginBottom: "5px",
+              }}
+            />
+          ),
+        },
+      ];
+    }
+
+    return [
+      {
+        id: "clip-none",
+        parent: "clipboard",
+        perform: () => {
+          window.location.pathname = "colors";
+        },
+        name: "No colors in clipboard",
+        icon: (
+          <HiOutlineColorSwatch
+            style={{
+              width: "17px",
+              height: "17px",
+              marginBottom: "5px",
+            }}
+          />
+        ),
+      },
+    ];
+  };
+
+  const getActions = (): any => {
+    return [
+      {
+        id: "clipboard",
+        name: "Clipboard",
+        icon: (
+          <HiOutlineColorSwatch
+            style={{
+              width: "17px",
+              height: "17px",
+              marginBottom: "5px",
+            }}
+          />
+        ),
+      },
+      ...getColorActions(),
+    ];
+  };
+
+  useRegisterActions(getActions(), [clipboardItem]);
+
   return (
     <KBarPortal>
       <KBarPositioner>
@@ -140,6 +336,8 @@ export const CommandPaletteProvider = ({
 }: {
   children: any;
 }): ReactElement => {
+  const [clipboardItem, setClipboardItem] = useState("");
+
   const toast = useToast();
   const showToast = (message: string) => {
     toast({
@@ -173,13 +371,6 @@ export const CommandPaletteProvider = ({
       "lorem ipsum(100 words) copied to clipboard"
     );
   };
-
-  useEffect(() => {
-    const clipboardData = navigator.clipboard.readText();
-    clipboardData.then((d) => {
-      console.log(d);
-    });
-  }, []);
 
   const actions = [
     {
@@ -302,7 +493,7 @@ export const CommandPaletteProvider = ({
   ];
 
   return (
-    <KBarProvider actions={actions} options={{ enableHistory: true }}>
+    <KBarProvider actions={actions}>
       <CommandBar />
       {children}
     </KBarProvider>
