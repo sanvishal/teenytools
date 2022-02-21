@@ -5,6 +5,9 @@ import {
   Divider,
   Flex,
   HStack,
+  Input,
+  InputGroup,
+  InputLeftElement,
   Menu,
   MenuButton,
   MenuItem,
@@ -20,6 +23,7 @@ import {
   FiCheck,
   FiChevronRight,
   FiRefreshCw,
+  FiType,
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { PlaceHolderImageSketch } from "../../components/PlaceHolderImageSketch";
@@ -32,6 +36,11 @@ export const PlaceHolderImage = (): ReactElement => {
   const [currentTool, setCurrentTool] = useState<PlaceHolderTools>(
     PlaceHolderTools.IMAGE
   );
+  const [size, setSize] = useState<{ w: number; h: number }>({
+    w: 400,
+    h: 400,
+  });
+  const [placeholderText, setPlaceholderText] = useState("");
 
   return (
     <MotionBox
@@ -81,10 +90,10 @@ export const PlaceHolderImage = (): ReactElement => {
             ></Center>
             <Box p={7} zIndex={1}>
               <PlaceHolderImageSketch
-                w={400}
-                h={400}
+                w={size.w}
+                h={size.h}
                 bgColor="#333333"
-                text="something"
+                text={placeholderText || `${size.w}x${size.h}`}
               />
             </Box>
           </Center>
@@ -143,23 +152,35 @@ export const PlaceHolderImage = (): ReactElement => {
                 <Divider />
               </Box>
               <Box w="full" p={1}>
-                <Button
-                  isFullWidth
-                  role="group"
-                  // onClick={() => {
-                  //   setLoremResult(loremIpsum(loremConfig));
-                  // }}
+                <VStack
+                  w="100%"
+                  p={3}
+                  align="flex-start"
+                  justify="flex-start"
+                  bg="dialogFg"
+                  borderRadius="md"
+                  h={100}
                 >
-                  Randomize
-                  <Center
-                    ml={3}
-                    _groupHover={{
-                      animation: "rotating 2s linear infinite",
-                    }}
-                  >
-                    <FiRefreshCw />
-                  </Center>
-                </Button>
+                  <Box textAlign="left">
+                    <Text fontSize="lg">Placeholder Text</Text>
+                  </Box>
+                  <InputGroup role="group">
+                    <Input
+                      placeholder={placeholderText || `${size.w}x${size.h}`}
+                      onChange={(e) => {
+                        setPlaceholderText(e.target.value);
+                      }}
+                    />
+                    <InputLeftElement
+                      pointerEvents="none"
+                      color="inputIconUnFocus"
+                      _groupFocusWithin={{
+                        color: "inputIconFocus",
+                      }}
+                      children={<FiType />}
+                    />
+                  </InputGroup>
+                </VStack>
               </Box>
             </VStack>
           </Box>

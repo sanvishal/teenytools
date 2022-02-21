@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import Sketch from "react-p5";
 
 export const PlaceHolderImageSketch = ({
@@ -12,14 +12,15 @@ export const PlaceHolderImageSketch = ({
   h: number;
   text: string;
 }): ReactElement => {
-  let avenir: any, mono: any;
+  const [avenir, setAvenir] = useState(null);
+  const [mono, setMono] = useState(null);
   const setup = (p5: any, canvasParentRef: any) => {
     p5.createCanvas(w, h).parent(canvasParentRef);
   };
 
   const preLoad = (p5: any) => {
-    avenir = p5.loadFont("/fonts/AvenirLTStd-Black.ttf");
-    mono = p5.loadFont("/fonts/SpaceMono-Bold.ttf");
+    setAvenir(p5.loadFont("/fonts/AvenirLTStd-Black.ttf"));
+    setMono(p5.loadFont("/fonts/SpaceMono-Bold.ttf"));
   };
 
   const draw = (p5: any) => {

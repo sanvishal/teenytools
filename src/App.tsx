@@ -9,8 +9,8 @@ export const App = () => {
   return (
     <AppProvider>
       <>
-        <NavBar />
         <Router>
+          <NavBar />
           <AnimatePresence>
             <Routes />
           </AnimatePresence>

@@ -9,9 +9,11 @@ import {
 import { ReactElement } from "react";
 import { ColorModeSwitcher } from "../ColorModeSwitcher";
 import Logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 
 export const NavBar = (): ReactElement => {
   const { colorMode } = useColorMode();
+  const navigate = useNavigate();
 
   return (
     <Flex
@@ -23,7 +25,13 @@ export const NavBar = (): ReactElement => {
       color="white"
     >
       <Flex align="center" mr={5}>
-        <HStack spacing="10px">
+        <HStack
+          spacing="10px"
+          onClick={() => {
+            navigate("/");
+          }}
+          cursor="pointer"
+        >
           <Center
             w="40px"
             h="40px"

@@ -54,6 +54,14 @@ const theme = extendTheme({
         default: "gray.200",
         _dark: "#272727",
       },
+      inputIconUnFocus: {
+        default: "gray.500",
+        _dark: "gray",
+      },
+      inputIconFocus: {
+        default: "gray.900",
+        _dark: "gray.300",
+      },
     },
     boxShadow: {
       md: "0 8px 30px #0000001f",

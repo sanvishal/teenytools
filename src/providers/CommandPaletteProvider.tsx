@@ -13,7 +13,7 @@ import {
 import { forwardRef, Fragment, ReactElement, useMemo } from "react";
 import { VscSymbolColor } from "react-icons/vsc";
 import { HiOutlineColorSwatch } from "react-icons/hi";
-import { FiBox, FiHome } from "react-icons/fi";
+import { FiBox, FiHome, FiImage, FiType } from "react-icons/fi";
 import { useRecentColors } from "../hooks/useRecentColors";
 import { MdGradient } from "react-icons/md";
 
@@ -53,15 +53,15 @@ const ResultItem = forwardRef(
       >
         <HStack spacing={3}>
           {action.icon && action.icon}
-          <VStack>
+          <HStack>
             {ancestors.length > 0 &&
               ancestors.map((ancestor) => (
-                <Box key={ancestor.id} color="text">
-                  {ancestor.name}
-                </Box>
+                <Text as="span" key={ancestor.id} color="text" opacity={0.3}>
+                  {ancestor.name + "... >"}
+                </Text>
               ))}
             <Text color="text">{action.name}</Text>
-          </VStack>
+          </HStack>
         </HStack>
       </Box>
     );
@@ -191,10 +191,44 @@ export const CommandPaletteProvider = ({
       id: "placeholders",
       name: "Placeholders",
       section: "Navigation",
+      keywords: "place placeholders random lorem image generate",
+      // perform: () => (window.location.pathname = "placeholders/lorem"),
+      icon: (
+        <FiBox
+          style={{
+            width: "17px",
+            height: "17px",
+            marginBottom: "5px",
+          }}
+        />
+      ),
+    },
+    {
+      id: "lorem",
+      parent: "placeholders",
+      name: "Lorem Ipsum",
+      section: "Navigation",
       keywords: "place placeholders random lorem",
       perform: () => (window.location.pathname = "placeholders/lorem"),
       icon: (
-        <FiBox
+        <FiType
+          style={{
+            width: "17px",
+            height: "17px",
+            marginBottom: "5px",
+          }}
+        />
+      ),
+    },
+    {
+      id: "image",
+      parent: "placeholders",
+      name: "Placeholder Image",
+      section: "Navigation",
+      keywords: "place placeholders random image generate",
+      perform: () => (window.location.pathname = "placeholders/image"),
+      icon: (
+        <FiImage
           style={{
             width: "17px",
             height: "17px",
