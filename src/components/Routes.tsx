@@ -3,7 +3,8 @@ import { Route, useLocation, Routes as Switch } from "react-router-dom";
 import { Colors } from "../views/Colors";
 import { Palettes } from "../views/Palettes";
 import { AppGrid } from "./AppGrid";
-import { PlaceHolders } from "./PlaceHolders";
+import { LoremIpsum } from "../views/placeholders/LoremIpsum";
+import { PlaceHolderImage } from "../views/placeholders/PlaceHolderImage";
 
 export const Routes = (): ReactElement => {
   const location = useLocation();
@@ -13,7 +14,8 @@ export const Routes = (): ReactElement => {
       <Route path="/" element={<AppGrid />} />
       <Route path="/colors" element={<Colors />} />
       <Route path="/palettes" element={<Palettes />} />
-      <Route path="/placeholders" element={<PlaceHolders />} />
+      <Route path="/placeholders/lorem" element={<LoremIpsum />} />
+      <Route path="/placeholders/image" element={<PlaceHolderImage />} />
     </Switch>
   );
 };

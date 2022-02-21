@@ -6,10 +6,12 @@ export type ColorPalette = {
 
 export enum PlaceHolderTools {
   "LOREM" = "LOREM",
-  "SVG_TEXT" = "SVG_TEXT",
+  // "SVG_TEXT" = "SVG_TEXT",
+  "IMAGE" = "IMAGE",
 }
 
 export const PlaceHolderToolsInfo = {
   [PlaceHolderTools.LOREM]: { displayName: "Lorem Ipsum" },
-  [PlaceHolderTools.SVG_TEXT]: { displayName: "SVG Text" },
+  // [PlaceHolderTools.SVG_TEXT]: { displayName: "SVG Text" },
+  [PlaceHolderTools.IMAGE]: { displayName: "Placeholder Image" },
 };

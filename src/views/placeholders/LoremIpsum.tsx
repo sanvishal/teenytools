@@ -19,7 +19,7 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ReactElement, useEffect, useState } from "react";
 import {
   FiCheck,
@@ -29,13 +29,15 @@ import {
   FiCopy,
   FiRefreshCw,
 } from "react-icons/fi";
-import { PlaceHolderTools, PlaceHolderToolsInfo } from "../types";
+import { PlaceHolderTools, PlaceHolderToolsInfo } from "../../types";
 import { loremIpsum } from "lorem-ipsum";
-import { ColoredToast } from "./ColoredToast";
+import { ColoredToast } from "../../components/ColoredToast";
+import { useNavigate } from "react-router-dom";
 
 const MotionBox = motion(Box);
 
-export const PlaceHolders = (): ReactElement => {
+export const LoremIpsum = (): ReactElement => {
+  const navigate = useNavigate();
   const [currentTool, setCurrentTool] = useState<PlaceHolderTools>(
     PlaceHolderTools.LOREM
   );
@@ -81,10 +83,25 @@ export const PlaceHolders = (): ReactElement => {
       w="100%"
       sx={{ height: { md: "calc(100vh - 88px)", sm: "unset" } }}
       padding={6}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 1 }}
-      transition={{ duration: 0.24 }}
+      initial={{
+        opacity: 0,
+        transformPerspective: 1000,
+        rotateX: 7,
+        scale: 0.95,
+      }}
+      animate={{
+        opacity: 1,
+        transformPerspective: 1000,
+        rotateX: 0,
+        scale: 1,
+      }}
+      exit={{
+        opacity: 0,
+        transformPerspective: 1000,
+        rotateX: -7,
+        scale: 0.95,
+      }}
+      transition={{ duration: 0.2 }}
       overflow={{ xl: "hidden", lg: "scroll", sm: "scroll" }}
     >
       <Flex w="90%" h="100%" margin="auto">
@@ -119,8 +136,8 @@ export const PlaceHolders = (): ReactElement => {
           </Center>
         </Center>
         <Center w="30%" h="full" p={4}>
-          <Box h="full" w="full" overflow="auto">
-            <VStack h="full" w="full">
+          <Box h="full" w="full" overflowY="auto">
+            <VStack h="full" w="full" overflowX="hidden">
               <HStack p={1} w="full" mb={1}>
                 <Button w={10} h={10} p={0}>
                   <FiChevronLeft style={{ width: "27px", height: "27px" }} />
@@ -138,7 +155,14 @@ export const PlaceHolders = (): ReactElement => {
                       return (
                         <MenuItem
                           onClick={() => {
-                            setCurrentTool(tool as PlaceHolderTools);
+                            switch (tool as PlaceHolderTools) {
+                              case PlaceHolderTools.LOREM:
+                                navigate("/placeholders/lorem");
+                                break;
+                              case PlaceHolderTools.IMAGE:
+                                navigate("/placeholders/image");
+                                break;
+                            }
                           }}
                         >
                           <HStack justify="space-between" w="100%">
@@ -280,6 +304,7 @@ export const PlaceHolders = (): ReactElement => {
                 >
                   <HStack textAlign="left" spacing={3}>
                     <Checkbox
+                      defaultIsChecked
                       value={loremConfig.isBreak}
                       onChange={(e) => {
                         const _loremConfig = { ...loremConfig };

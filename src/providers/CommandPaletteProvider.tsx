@@ -192,7 +192,7 @@ export const CommandPaletteProvider = ({
       name: "Placeholders",
       section: "Navigation",
       keywords: "place placeholders random lorem",
-      perform: () => (window.location.pathname = "placeholders"),
+      perform: () => (window.location.pathname = "placeholders/lorem"),
       icon: (
         <FiBox
           style={{

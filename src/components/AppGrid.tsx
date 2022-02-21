@@ -18,7 +18,7 @@ const apps = [
   },
   {
     name: "Placeholders",
-    link: "/placeholders",
+    link: "/placeholders/lorem",
     description: "Generate, customize and export various placeholders",
   },
   {
