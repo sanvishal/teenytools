@@ -1,4 +1,11 @@
-import { Box, HStack, Text, useColorMode, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  Text,
+  useColorMode,
+  useToast,
+  VStack,
+} from "@chakra-ui/react";
 import {
   KBarProvider,
   KBarPortal,
@@ -10,12 +17,14 @@ import {
   ActionImpl,
   ActionId,
 } from "kbar";
-import { forwardRef, Fragment, ReactElement, useMemo } from "react";
+import { forwardRef, Fragment, ReactElement, useEffect, useMemo } from "react";
 import { VscSymbolColor } from "react-icons/vsc";
 import { HiOutlineColorSwatch } from "react-icons/hi";
 import { FiBox, FiHome, FiImage, FiType } from "react-icons/fi";
 import { useRecentColors } from "../hooks/useRecentColors";
 import { MdGradient } from "react-icons/md";
+import { ColoredToast } from "../components/ColoredToast";
+import { loremIpsum } from "lorem-ipsum";
 
 const ResultItem = forwardRef(
   (
@@ -35,10 +44,6 @@ const ResultItem = forwardRef(
       const index = action.ancestors.findIndex(
         (ancestor) => ancestor.id === currentRootActionId
       );
-      // +1 removes the currentRootAction; e.g.
-      // if we are on the "Set theme" parent action,
-      // the UI should not display "Set theme… > Dark"
-      // but rather just "Dark"
       return action.ancestors.slice(index + 1);
     }, [action.ancestors, currentRootActionId]);
 
@@ -54,12 +59,11 @@ const ResultItem = forwardRef(
         <HStack spacing={3}>
           {action.icon && action.icon}
           <HStack>
-            {ancestors.length > 0 &&
-              ancestors.map((ancestor) => (
-                <Text as="span" key={ancestor.id} color="text" opacity={0.3}>
-                  {ancestor.name + "... >"}
-                </Text>
-              ))}
+            {ancestors.length > 0 && (
+              <Text as="span" color="text" opacity={0.3}>
+                {ancestors[ancestors.length - 1].name + "... >"}
+              </Text>
+            )}
             <Text color="text">{action.name}</Text>
           </HStack>
         </HStack>
@@ -77,7 +81,7 @@ function RenderResults() {
       onRender={({ item, active }) =>
         typeof item === "string" ? (
           <Box px={2} bg="cmdBg" textTransform="uppercase">
-            <Text opacity={0.5} fontSize="smaller" h={10}>
+            <Text opacity={0.5} fontSize="smaller" h={5}>
               {item}
             </Text>
           </Box>
@@ -136,7 +140,47 @@ export const CommandPaletteProvider = ({
 }: {
   children: any;
 }): ReactElement => {
-  const { setColorMode, colorMode } = useColorMode();
+  const toast = useToast();
+  const showToast = (message: string) => {
+    toast({
+      position: "top",
+      duration: 3000,
+      isClosable: true,
+      containerStyle: {
+        minWidth: "unset",
+      },
+      render: () => (
+        <ColoredToast
+          showTile={false}
+          bgColor="toastBg"
+          message={message + " 🎉"}
+        />
+      ),
+    });
+  };
+
+  const copyTextToClipBoard = (thingToCopy: string, message: string) => {
+    navigator.clipboard.writeText(thingToCopy);
+    showToast(message);
+  };
+
+  const quickCopyLorem = () => {
+    copyTextToClipBoard(
+      loremIpsum({
+        count: 100,
+        units: "word",
+      }),
+      "lorem ipsum(100 words) copied to clipboard"
+    );
+  };
+
+  useEffect(() => {
+    const clipboardData = navigator.clipboard.readText();
+    clipboardData.then((d) => {
+      console.log(d);
+    });
+  }, []);
+
   const actions = [
     {
       id: "home",
@@ -210,6 +254,24 @@ export const CommandPaletteProvider = ({
       section: "Navigation",
       keywords: "place placeholders random lorem",
       perform: () => (window.location.pathname = "placeholders/lorem"),
+      icon: (
+        <FiType
+          style={{
+            width: "17px",
+            height: "17px",
+            marginBottom: "5px",
+          }}
+        />
+      ),
+    },
+    {
+      id: "lorem-gen",
+      name: "Quick Copy - Lorem Ipsum",
+      section: "Quick Actions",
+      keywords: "place placeholders random lorem quick copy",
+      perform: () => {
+        quickCopyLorem();
+      },
       icon: (
         <FiType
           style={{

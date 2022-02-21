@@ -1,3 +1,5 @@
+import { PlaceHolderTools } from "../types";
+
 const setDualColors = (
   mode: "light" | "dark" | undefined,
   light: string | undefined,
@@ -26,5 +28,54 @@ const reorderItems = (
   return result;
 };
 
+const getPreviousTool = (currentTool: PlaceHolderTools): PlaceHolderTools => {
+  let tools = Object.keys(PlaceHolderTools);
+  let result = currentTool;
+
+  const getIdx = (idx: number): number => {
+    if (idx - 1 < 0) {
+      return tools.length - 1;
+    }
+    return idx - 1;
+  };
+
+  tools.forEach((tool, idx) => {
+    if (tool === currentTool) {
+      result = tools[getIdx(idx)] as PlaceHolderTools;
+      return;
+    }
+  });
+
+  return result;
+};
+
+const getNextTool = (currentTool: PlaceHolderTools): PlaceHolderTools => {
+  let tools = Object.keys(PlaceHolderTools);
+  let result = currentTool;
+
+  const getIdx = (idx: number): number => {
+    if (idx + 1 > tools.length - 1) {
+      return 0;
+    }
+    return idx + 1;
+  };
+
+  tools.forEach((tool, idx) => {
+    if (tool === currentTool) {
+      result = tools[getIdx(idx)] as PlaceHolderTools;
+      return;
+    }
+  });
+
+  return result;
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export { setDualColors, roundDecimals, randRange, reorderItems };
+export {
+  setDualColors,
+  roundDecimals,
+  randRange,
+  reorderItems,
+  getPreviousTool,
+  getNextTool,
+};

@@ -11,7 +11,7 @@ export enum PlaceHolderTools {
 }
 
 export const PlaceHolderToolsInfo = {
-  [PlaceHolderTools.LOREM]: { displayName: "Lorem Ipsum" },
+  [PlaceHolderTools.LOREM]: { displayName: "Lorem Ipsum", link: "lorem" },
   // [PlaceHolderTools.SVG_TEXT]: { displayName: "SVG Text" },
-  [PlaceHolderTools.IMAGE]: { displayName: "Placeholder Image" },
+  [PlaceHolderTools.IMAGE]: { displayName: "Placeholder Image", link: "image" },
 };

@@ -33,6 +33,7 @@ import { PlaceHolderTools, PlaceHolderToolsInfo } from "../../types";
 import { loremIpsum } from "lorem-ipsum";
 import { ColoredToast } from "../../components/ColoredToast";
 import { useNavigate } from "react-router-dom";
+import { getNextTool, getPreviousTool } from "../../utils/utils";
 
 const MotionBox = motion(Box);
 
@@ -139,7 +140,18 @@ export const LoremIpsum = (): ReactElement => {
           <Box h="full" w="full" overflowY="auto">
             <VStack h="full" w="full" overflowX="hidden">
               <HStack p={1} w="full" mb={1}>
-                <Button w={10} h={10} p={0}>
+                <Button
+                  w={10}
+                  h={10}
+                  p={0}
+                  onClick={() => {
+                    navigate(
+                      `/placeholders/${
+                        PlaceHolderToolsInfo[getPreviousTool(currentTool)].link
+                      }`
+                    );
+                  }}
+                >
                   <FiChevronLeft style={{ width: "27px", height: "27px" }} />
                 </Button>
                 <Menu matchWidth placement="bottom">
@@ -181,7 +193,18 @@ export const LoremIpsum = (): ReactElement => {
                     })}
                   </MenuList>
                 </Menu>
-                <Button w={10} h={10} p={0}>
+                <Button
+                  w={10}
+                  h={10}
+                  p={0}
+                  onClick={() => {
+                    navigate(
+                      `/placeholders/${
+                        PlaceHolderToolsInfo[getNextTool(currentTool)].link
+                      }`
+                    );
+                  }}
+                >
                   <FiChevronRight style={{ width: "27px", height: "27px" }} />
                 </Button>
               </HStack>

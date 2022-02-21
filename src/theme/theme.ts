@@ -22,6 +22,7 @@ const theme = extendTheme({
   },
   semanticTokens: {
     colors: {
+      actualBg: { default: "gray.50", _dark: "#171817" },
       bg: { default: "gray.100", _dark: "gray.900" },
       text: { default: "gray.900", _dark: "gray.100" },
       subText: { default: "gray.500", _dark: "gray.500" },
@@ -65,6 +66,7 @@ const theme = extendTheme({
     },
     boxShadow: {
       md: "0 8px 30px #0000001f",
+      lgg: "0px 24px 38px 3px hsla(0, 0%, 0%, 0.14), 0px 9px 46px 8px hsla(0, 0%, 0%, 0.12), 0px 11px 15px -7px hsla(0, 0%, 0%, 0.2)",
     },
     backdropFilter: {
       dialogFilter: {

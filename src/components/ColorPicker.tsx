@@ -8,11 +8,13 @@ export const ColorPicker = ({
   onChange,
   onChangeComplete,
   showAlpha = true,
+  width = "300px",
 }: {
   color: any;
   onChange?: any;
   onChangeComplete?: any;
   showAlpha?: boolean;
+  width?: string;
 }): ReactElement => {
   const { colorMode } = useColorMode();
 
@@ -25,7 +27,7 @@ export const ColorPicker = ({
       styles={{
         default: {
           picker: {
-            width: "300px",
+            width,
             borderRadius: "5px",
             overflow: "hidden",
             background: setDualColors(colorMode, "#ffffff", "#1f1f1f"),
