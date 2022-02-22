@@ -15,3 +15,8 @@ export const PlaceHolderToolsInfo = {
   // [PlaceHolderTools.SVG_TEXT]: { displayName: "SVG Text" },
   [PlaceHolderTools.IMAGE]: { displayName: "Placeholder Image", link: "image" },
 };
+
+export enum TinierTools {
+  "URL" = "URL",
+  "DATE" = "DATE",
+}

@@ -37,6 +37,7 @@ import { ColoredToast } from "../components/ColoredToast";
 import { loremIpsum } from "lorem-ipsum";
 import chroma from "chroma-js";
 import { getHSLA, getHSLACSS, getRGBA } from "../utils/colorUtils";
+import { useQuickerActions } from "../hooks/useQuickerActions";
 
 const ResultItem = forwardRef(
   (
@@ -134,6 +135,8 @@ const animatorStyle = {
 };
 
 const CommandBar = () => {
+  useQuickerActions();
+
   // useRecentColors();
   const [clipboardItem, setClipboardItem] = useState("");
   useKBar(() => {
@@ -323,7 +326,10 @@ const CommandBar = () => {
     <KBarPortal>
       <KBarPositioner style={{ zIndex: "10000" }}>
         <KBarAnimator style={animatorStyle}>
-          <KBarSearch style={searchStyle} />
+          <KBarSearch
+            style={searchStyle}
+            placeholder="Navigate or Search Anything"
+          />
           <RenderResults />
         </KBarAnimator>
       </KBarPositioner>

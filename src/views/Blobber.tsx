@@ -26,7 +26,6 @@ import {
   FiMaximize,
   FiRefreshCw,
   FiStar,
-  FiType,
 } from "react-icons/fi";
 import { ColoredToast } from "../components/ColoredToast";
 import { spline } from "../utils/svgUtils";

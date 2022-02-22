@@ -3,6 +3,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "../theme/theme";
 import { ColorDialogProvider } from "./ColorDialog";
 import { CommandPaletteProvider } from "./CommandPaletteProvider";
+import { TinierToolsProvider } from "./TinierToolsProvider";
 
 export const AppProvider = ({
   children,
@@ -10,8 +11,10 @@ export const AppProvider = ({
   children: ReactChild | ReactChildren;
 }): ReactElement => (
   <ChakraProvider theme={theme}>
-    <CommandPaletteProvider>
-      <ColorDialogProvider>{children}</ColorDialogProvider>
-    </CommandPaletteProvider>
+    <TinierToolsProvider>
+      <CommandPaletteProvider>
+        <ColorDialogProvider>{children}</ColorDialogProvider>
+      </CommandPaletteProvider>
+    </TinierToolsProvider>
   </ChakraProvider>
 );
