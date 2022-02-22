@@ -14,16 +14,18 @@ const apps = [
     name: "Palettes",
     link: "/palettes",
     description:
-      "A Local Repository use, share and export your favorite palettes",
+      "A Local Repository to use, edit, share and export your favorite palettes",
   },
   {
     name: "Placeholders",
     link: "/placeholders/lorem",
-    description: "Generate, customize and export various placeholders",
+    description:
+      "Generate, customize and export various image & text placeholders",
   },
   {
-    name: "Blobber",
-    description: "Create organic Blobs",
+    name: "Bouba & Kiki",
+    link: "/blobs",
+    description: "Create and export organic shapes and blobs",
   },
   {
     name: "Dividers",

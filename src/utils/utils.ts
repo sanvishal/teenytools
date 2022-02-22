@@ -12,8 +12,9 @@ const roundDecimals = (num: number) => {
   return num.toFixed(3);
 };
 
-const randRange = (min: number, max: number): number => {
-  return Math.floor(Math.random() * (max - min) + min);
+const randRange = (min: number, max: number, floor = true): number => {
+  const rand = Math.random() * (max - min) + min;
+  return floor ? Math.floor(rand) : rand;
 };
 
 const reorderItems = (

@@ -30,7 +30,7 @@ import {
 } from "react";
 import { VscSymbolColor } from "react-icons/vsc";
 import { HiOutlineColorSwatch } from "react-icons/hi";
-import { FiBox, FiHome, FiImage, FiType } from "react-icons/fi";
+import { FiBox, FiCircle, FiHome, FiImage, FiType } from "react-icons/fi";
 import { useRecentColors } from "../hooks/useRecentColors";
 import { MdGradient } from "react-icons/md";
 import { ColoredToast } from "../components/ColoredToast";
@@ -321,7 +321,7 @@ const CommandBar = () => {
 
   return (
     <KBarPortal>
-      <KBarPositioner>
+      <KBarPositioner style={{ zIndex: "10000" }}>
         <KBarAnimator style={animatorStyle}>
           <KBarSearch style={searchStyle} />
           <RenderResults />
@@ -336,8 +336,6 @@ export const CommandPaletteProvider = ({
 }: {
   children: any;
 }): ReactElement => {
-  const [clipboardItem, setClipboardItem] = useState("");
-
   const toast = useToast();
   const showToast = (message: string) => {
     toast({
@@ -482,6 +480,22 @@ export const CommandPaletteProvider = ({
       perform: () => (window.location.pathname = "placeholders/image"),
       icon: (
         <FiImage
+          style={{
+            width: "17px",
+            height: "17px",
+            marginBottom: "5px",
+          }}
+        />
+      ),
+    },
+    {
+      id: "blobber",
+      name: "Bouba and Kiki",
+      section: "Navigation",
+      keywords: "generative kiki blob bouba",
+      perform: () => (window.location.pathname = "blobs"),
+      icon: (
+        <FiCircle
           style={{
             width: "17px",
             height: "17px",

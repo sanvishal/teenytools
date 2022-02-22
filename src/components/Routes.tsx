@@ -5,6 +5,7 @@ import { Palettes } from "../views/Palettes";
 import { AppGrid } from "./AppGrid";
 import { LoremIpsum } from "../views/placeholders/LoremIpsum";
 import { PlaceHolderImage } from "../views/placeholders/PlaceHolderImage";
+import { Blobber } from "../views/Blobber";
 
 export const Routes = (): ReactElement => {
   const location = useLocation();
@@ -16,6 +17,7 @@ export const Routes = (): ReactElement => {
       <Route path="/palettes" element={<Palettes />} />
       <Route path="/placeholders/lorem" element={<LoremIpsum />} />
       <Route path="/placeholders/image" element={<PlaceHolderImage />} />
+      <Route path="/blobs" element={<Blobber />} />
     </Switch>
   );
 };

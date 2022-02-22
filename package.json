@@ -17,6 +17,7 @@
     "color-harmony": "^0.3.0",
     "easing-coordinates": "^2.0.2",
     "framer-motion": "^4.1.17",
+    "gsap": "^3.9.1",
     "kbar": "^0.1.0-beta.27",
     "lorem-ipsum": "^2.0.4",
     "nanoid": "^3.3.1",

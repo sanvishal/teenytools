@@ -63,6 +63,10 @@ const theme = extendTheme({
         default: "gray.900",
         _dark: "gray.300",
       },
+      svgPathDropShadowColor: {
+        default: "hsla(0, 0%, 0%, 0.09)",
+        _dark: "hsla(0.00,0.00%,20.00%,0.8)",
+      },
     },
     boxShadow: {
       md: "0 8px 30px #0000001f",

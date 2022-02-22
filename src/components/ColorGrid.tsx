@@ -1,6 +1,13 @@
-import { Box, HStack, Text } from "@chakra-ui/react";
+import { Box, HStack, Text, Tooltip } from "@chakra-ui/react";
 import { ReactElement, useState } from "react";
-import { FiFolderPlus, FiMinus, FiPlus, FiRefreshCcw } from "react-icons/fi";
+import {
+  FiBookOpen,
+  FiFolderPlus,
+  FiMinus,
+  FiPlus,
+  FiRefreshCcw,
+  FiShare,
+} from "react-icons/fi";
 import { ColorTile } from "./ColorTile";
 import { PaletteDialog } from "./PaletteDialog";
 
@@ -73,7 +80,7 @@ export const ColorGridContainer = ({
       }}
       w="full"
       borderRadius={6}
-      cursor="context-menu"
+      cursor="pointer"
     >
       <HStack alignItems={"flex-start"} role="group">
         <Text fontSize={"lg"} color={titleColor}>
@@ -123,7 +130,7 @@ export const ColorGridContainer = ({
             <FiRefreshCcw />
           </Box>
         )}
-        {onOpenPalette && (
+        {
           <Box
             className="color-grid-open"
             px={2}
@@ -135,10 +142,11 @@ export const ColorGridContainer = ({
             opacity={0}
             _groupHover={{ opacity: 1 }}
             style={{ marginLeft: "auto" }}
+            color={titleColor}
           >
-            <FiFolderPlus />
+            <FiBookOpen />
           </Box>
-        )}
+        }
       </HStack>
       <ColorGrid colArray={colArray} isCentered={isCentered} />
       <PaletteDialog

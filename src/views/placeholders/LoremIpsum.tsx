@@ -73,7 +73,7 @@ export const LoremIpsum = (): ReactElement => {
         <ColoredToast
           showTile={false}
           bgColor="toastBg"
-          message={message + "🎉"}
+          message={message + " 🎉"}
         />
       ),
     });
