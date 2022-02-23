@@ -310,6 +310,7 @@ const CommandBar = () => {
       <KBarPositioner style={{ zIndex: "10000" }}>
         <KBarAnimator style={animatorStyle}>
           <KBarSearch
+            autoFocus
             style={searchStyle}
             placeholder="Navigate or Search Anything"
           />
@@ -496,7 +497,7 @@ export const CommandPaletteProvider = ({
   ];
 
   return (
-    <KBarProvider actions={actions}>
+    <KBarProvider actions={actions} options={{ disableDocumentLock: true }}>
       <CommandBar />
       {children}
     </KBarProvider>

@@ -7,17 +7,25 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import { ColorModeSwitcher } from "../ColorModeSwitcher";
 import Logo from "../assets/logo.png";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FiCommand } from "react-icons/fi";
 import { useKBar } from "kbar";
+import { motion } from "framer-motion";
+
+const MotionText = motion(Text);
 
 export const NavBar = (): ReactElement => {
   const { colorMode } = useColorMode();
   const navigate = useNavigate();
+  const location = useLocation();
   const { query } = useKBar();
+
+  useEffect(() => {
+    console.log(location);
+  }, [location]);
 
   return (
     <Flex
@@ -55,6 +63,27 @@ export const NavBar = (): ReactElement => {
           >
             teenytools
           </Text>
+          {location.pathname !== "/" && (
+            <Box>
+              <Text fontSize="lg" textTransform="capitalize" ml={3}>
+                &bull;
+              </Text>
+            </Box>
+          )}
+          <Box>
+            <MotionText
+              layout
+              fontSize="lg"
+              textTransform="capitalize"
+              ml={3}
+              key={location.pathname}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              {location.pathname.split("/")?.[1] || ""}
+            </MotionText>
+          </Box>
         </HStack>
       </Flex>
       <Box mt={{ base: 4, md: 0 }}>
@@ -71,7 +100,9 @@ export const NavBar = (): ReactElement => {
             backdropFilter="auto"
             backdropBlur={25}
             boxShadow={"md"}
-            onClick={() => query.toggle()}
+            onClick={() => {
+              query.toggle();
+            }}
             _hover={{
               background: colorMode === "dark" ? "#171817e5" : "white",
             }}

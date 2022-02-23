@@ -19,7 +19,9 @@ export const ToolCard = ({
     <Link
       to={link}
       onClick={() => {
-        query.toggle();
+        if (toolName === "Command Palette") {
+          query.toggle();
+        }
       }}
     >
       <Box
