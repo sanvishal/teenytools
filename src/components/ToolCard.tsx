@@ -21,32 +21,22 @@ export const ToolCard = ({
 }): ReactElement => {
   const { query } = useKBar();
 
-  const iconStyles: CSSProperties = {
-    width: "200px",
-    height: "200px",
-    position: "absolute",
-    right: 0,
-    bottom: 0,
-    // transform: "rotate(-20deg)",
-    zIndex: 0,
-    color: "var(--chakra-colors-dialogFg)",
-    opacity: 0.8,
-  };
-
   const getIcon = () => {
     switch (id) {
       case "colors":
         return <VscSymbolColor style={{ width: "100%", height: "100%" }} />;
       case "palettes":
-        return <HiOutlineColorSwatch style={iconStyles} />;
+        return (
+          <HiOutlineColorSwatch style={{ width: "100%", height: "100%" }} />
+        );
       case "placeholders":
-        return <FiBox style={iconStyles} />;
+        return <FiBox style={{ width: "100%", height: "100%" }} />;
       case "cmd":
-        return <FiCommand style={iconStyles} />;
+        return <FiCommand style={{ width: "100%", height: "100%" }} />;
       case "blobber":
-        return <FiStar style={iconStyles} />;
+        return <FiStar style={{ width: "100%", height: "100%" }} />;
       default:
-        return <FiGift style={iconStyles} />;
+        return <FiGift style={{ width: "100%", height: "100%" }} />;
     }
   };
 
@@ -103,8 +93,8 @@ export const ToolCard = ({
             width: "200px",
             height: "200px",
             position: "absolute",
-            right: 0,
-            bottom: 0,
+            right: -20,
+            bottom: -20,
             transform: "rotate(-20deg)",
             zIndex: 0,
             opacity: 0.8,
