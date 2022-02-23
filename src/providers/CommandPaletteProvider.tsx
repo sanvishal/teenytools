@@ -1,11 +1,4 @@
-import {
-  Box,
-  HStack,
-  Text,
-  useColorMode,
-  useToast,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, HStack, Text, useToast } from "@chakra-ui/react";
 import {
   KBarProvider,
   KBarPortal,
@@ -17,26 +10,16 @@ import {
   ActionImpl,
   ActionId,
   useRegisterActions,
-  createAction,
   useKBar,
 } from "kbar";
-import {
-  forwardRef,
-  Fragment,
-  ReactElement,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { forwardRef, ReactElement, useMemo, useState } from "react";
 import { VscSymbolColor } from "react-icons/vsc";
 import { HiOutlineColorSwatch } from "react-icons/hi";
 import { FiBox, FiCircle, FiHome, FiImage, FiType } from "react-icons/fi";
-import { useRecentColors } from "../hooks/useRecentColors";
-import { MdGradient } from "react-icons/md";
 import { ColoredToast } from "../components/ColoredToast";
 import { loremIpsum } from "lorem-ipsum";
 import chroma from "chroma-js";
-import { getHSLA, getHSLACSS, getRGBA } from "../utils/colorUtils";
+import { getHSLACSS, getRGBA } from "../utils/colorUtils";
 import { useQuickerActions } from "../hooks/useQuickerActions";
 
 const ResultItem = forwardRef(
@@ -159,7 +142,7 @@ const CommandBar = () => {
       window.location.protocol +
       "//" +
       window.location.host +
-      "/colors/" +
+      "/colors" +
       `?p=${color.substring(1)}`
     );
   };

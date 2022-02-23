@@ -1,4 +1,5 @@
 import { Box, Text, useDisclosure } from "@chakra-ui/react";
+import { useKBar } from "kbar";
 import { ReactElement } from "react";
 import { Link } from "react-router-dom";
 import { ToolContainer } from "./ToolContainer";
@@ -12,8 +13,15 @@ export const ToolCard = ({
   description: string;
   link: string;
 }): ReactElement => {
+  const { query } = useKBar();
+
   return (
-    <Link to={link}>
+    <Link
+      to={link}
+      onClick={() => {
+        query.toggle();
+      }}
+    >
       <Box
         w="100%"
         h="300px"

@@ -28,8 +28,8 @@ const apps = [
     description: "Create and export organic shapes and blobs",
   },
   {
-    name: "Dividers",
-    description: "Create page dividers",
+    name: "Command Palette",
+    description: "⌘+K for Quick Navigation and Quicker Actions to more tools",
   },
 ];
 
@@ -41,7 +41,7 @@ export const AppGrid = (): ReactElement => {
       columns={3}
       spacing={6}
       paddingX={6}
-      minChildWidth={500}
+      minChildWidth={{ base: "100%", md: 500 }}
       id="grid"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

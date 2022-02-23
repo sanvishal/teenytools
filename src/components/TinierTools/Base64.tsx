@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   HStack,
   Input,
   InputGroup,
@@ -17,17 +16,19 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { ReactElement, useRef, useState } from "react";
-import { FiCopy, FiLink, FiLink2 } from "react-icons/fi";
+import { FiCopy, FiKey } from "react-icons/fi";
 import { ColoredToast } from "../ColoredToast";
 
-export const URLEncodeDecode = ({
+export const Base64 = ({
   isOpen,
   onClose,
 }: {
   isOpen: boolean;
   onClose: () => void;
 }): ReactElement => {
-  const [url, setUrl] = useState("https://hashnode.com/");
+  const [input, setInput] = useState(
+    "aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ=="
+  );
 
   const toast = useToast();
   const copyToClipBoard = (thingToCopy: string, message: string) => {
@@ -49,15 +50,15 @@ export const URLEncodeDecode = ({
     });
   };
 
-  const decode = () => {
+  const inputRef = useRef<any>(null);
+
+  const b64ToString = (): string => {
     try {
-      return decodeURIComponent(url);
+      return atob(input);
     } catch {
-      return "URL Malformed";
+      return "Input is not Base64";
     }
   };
-
-  const inputRef = useRef(null);
 
   return (
     <Modal
@@ -70,31 +71,37 @@ export const URLEncodeDecode = ({
       <ModalOverlay />
       <ModalContent borderRadius={8} border="dialogBorder" bg="dialogBg">
         <ModalHeader fontSize="xx-large" fontWeight="bold">
-          URL Encode/Decode
+          Base64 Encode/Decode
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Box py={4} mb={5}>
-            <InputGroup role="group">
-              <InputLeftElement
-                pointerEvents="none"
-                color="inputIconUnFocus"
-                _groupFocusWithin={{
-                  color: "inputIconFocus",
-                }}
-                children={<FiLink />}
-              />
-              <Input
-                ref={inputRef}
-                h={10}
-                fontSize="xl"
-                placeholder="Enter URL to convert"
-                value={url}
-                onChange={(e) => {
-                  setUrl(e.target.value);
-                }}
-              />
-            </InputGroup>
+            <VStack alignItems="flex-start">
+              <Text>Input String</Text>
+              <InputGroup role="group">
+                <InputLeftElement
+                  pointerEvents="none"
+                  color="inputIconUnFocus"
+                  _groupFocusWithin={{
+                    color: "inputIconFocus",
+                  }}
+                  children={<FiKey />}
+                />
+                <Input
+                  ref={inputRef}
+                  onFocus={() => {
+                    inputRef?.current?.select();
+                  }}
+                  h={10}
+                  fontSize="xl"
+                  placeholder="Enter Input to encode/decode"
+                  value={input}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                  }}
+                />
+              </InputGroup>
+            </VStack>
           </Box>
 
           <VStack
@@ -116,22 +123,19 @@ export const URLEncodeDecode = ({
                 w="full"
                 cursor="pointer"
                 onClick={() => {
-                  if (url) {
-                    copyToClipBoard(
-                      encodeURIComponent(url),
-                      "Decoded URL Copied"
-                    );
+                  if (input) {
+                    copyToClipBoard(btoa(input), "Encoded String Copied");
                   }
                 }}
               >
                 <VStack alignItems="flex-start">
-                  <Text opacity={0.6}>Encoded URL</Text>
+                  <Text opacity={0.6}>Encoded String</Text>
                   <HStack w="full" spacing={4}>
                     <Box>
                       <FiCopy />
                     </Box>
                     <Text fontSize="lg" fontFamily="monospace" w="full" pr={8}>
-                      {url ? encodeURIComponent(url) : "Nothing to Decode"}
+                      {input ? btoa(input) : "Nothing to Encode"}
                     </Text>
                   </HStack>
                 </VStack>
@@ -149,19 +153,19 @@ export const URLEncodeDecode = ({
                 w="full"
                 cursor="pointer"
                 onClick={() => {
-                  if (decode() !== "URL Malformed" && url) {
-                    copyToClipBoard(decode(), "Decoded URL Copied");
+                  if (input && b64ToString() !== "Input is not Base64") {
+                    copyToClipBoard(b64ToString(), "Decoded URL Copied");
                   }
                 }}
               >
                 <VStack alignItems="flex-start">
-                  <Text opacity={0.6}>Decoded URL</Text>
+                  <Text opacity={0.6}>Decoded String</Text>
                   <HStack w="full" spacing={4}>
                     <Box>
                       <FiCopy />
                     </Box>
                     <Text fontSize="lg" fontFamily="monospace" w="full" pr={8}>
-                      {url ? decode() : "Nothing to Encode"}
+                      {input ? b64ToString() : "Nothing to Decode"}
                     </Text>
                   </HStack>
                 </VStack>

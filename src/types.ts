@@ -18,5 +18,6 @@ export const PlaceHolderToolsInfo = {
 
 export enum TinierTools {
   "URL" = "URL",
-  "DATE" = "DATE",
+  "WORD" = "WORD",
+  "BASE64" = "BASE64",
 }
