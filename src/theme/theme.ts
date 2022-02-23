@@ -3,6 +3,10 @@ import { mode } from "@chakra-ui/theme-tools";
 import MenuTheme from "./MenuTheme";
 
 const theme = extendTheme({
+  config: {
+    useSystemColorMode: true,
+    initialColorMode: "dark",
+  },
   fonts: {
     body: "Avenir LT Std",
     heading: "Avenir LT Std",

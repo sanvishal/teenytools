@@ -288,7 +288,7 @@ const CommandBar = () => {
     return [
       {
         id: "clipboard",
-        name: "Clipboard",
+        name: "Clipboard Colors",
         icon: (
           <HiOutlineColorSwatch
             style={{

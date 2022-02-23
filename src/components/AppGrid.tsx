@@ -7,27 +7,32 @@ const apps = [
   {
     name: "Colors",
     link: "/colors",
+    id: "colors",
     description:
       "Generate lots of color palettes with just one color, share and export to many places",
   },
   {
     name: "Palettes",
+    id: "palettes",
     link: "/palettes",
     description:
       "A Local Repository to use, edit, share and export your favorite palettes",
   },
   {
+    id: "placeholders",
     name: "Placeholders",
     link: "/placeholders/lorem",
     description:
       "Generate, customize and export various image & text placeholders",
   },
   {
+    id: "blobber",
     name: "Bouba & Kiki",
     link: "/blobs",
     description: "Create and export organic shapes and blobs",
   },
   {
+    id: "cmd",
     name: "Command Palette",
     description: "⌘+K for Quick Navigation and Quicker Actions to more tools",
   },
@@ -54,6 +59,7 @@ export const AppGrid = (): ReactElement => {
           toolName={app.name}
           description={app.description}
           link={app.link || ""}
+          id={app.id || ""}
         />
       ))}
     </MotionSimpleGrid>

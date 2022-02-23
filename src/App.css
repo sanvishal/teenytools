@@ -99,6 +99,14 @@ body {
   opacity: 1;
 }
 
+.tile-icon {
+  transition: transform 200ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.tool-tile:hover > .tile-icon {
+  transform: rotate(-30deg) scale(1.15) !important;
+}
+
 canvas {
   border-radius: 7px;
   box-shadow: 0px 24px 38px 3px hsla(0, 0%, 0%, 0.14),
