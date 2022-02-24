@@ -1,13 +1,6 @@
-import { Box, HStack, Text, Tooltip } from "@chakra-ui/react";
+import { Box, HStack, Text } from "@chakra-ui/react";
 import { ReactElement, useState } from "react";
-import {
-  FiBookOpen,
-  FiFolderPlus,
-  FiMinus,
-  FiPlus,
-  FiRefreshCcw,
-  FiShare,
-} from "react-icons/fi";
+import { FiBookOpen, FiMinus, FiPlus, FiRefreshCcw } from "react-icons/fi";
 import { ColorTile } from "./ColorTile";
 import { PaletteDialog } from "./PaletteDialog";
 

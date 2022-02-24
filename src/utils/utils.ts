@@ -17,6 +17,10 @@ const randRange = (min: number, max: number, floor = true): number => {
   return floor ? Math.floor(rand) : rand;
 };
 
+const choose = (arr: Array<any>): any => {
+  return arr[Math.floor(Math.random() * arr.length)];
+};
+
 const reorderItems = (
   list: Array<any>,
   startIndex: number,
@@ -79,4 +83,5 @@ export {
   reorderItems,
   getPreviousTool,
   getNextTool,
+  choose,
 };

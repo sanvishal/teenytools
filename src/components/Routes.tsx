@@ -6,6 +6,7 @@ import { AppGrid } from "./AppGrid";
 import { LoremIpsum } from "../views/placeholders/LoremIpsum";
 import { PlaceHolderImage } from "../views/placeholders/PlaceHolderImage";
 import { Blobber } from "../views/Blobber";
+import { GenerativeBG } from "../views/GenerativeBG";
 
 export const Routes = (): ReactElement => {
   const location = useLocation();
@@ -18,6 +19,7 @@ export const Routes = (): ReactElement => {
       <Route path="/placeholders/lorem" element={<LoremIpsum />} />
       <Route path="/placeholders/image" element={<PlaceHolderImage />} />
       <Route path="/blobs" element={<Blobber />} />
+      <Route path="/generative" element={<GenerativeBG />} />
     </Switch>
   );
 };

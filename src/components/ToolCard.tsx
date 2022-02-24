@@ -1,11 +1,9 @@
-import { Box, styled, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { useKBar } from "kbar";
-import { CSSProperties, ReactElement } from "react";
-import { FiBox, FiCommand, FiCopy, FiGift, FiStar } from "react-icons/fi";
+import { ReactElement } from "react";
+import { FiBox, FiCommand, FiGift, FiStar } from "react-icons/fi";
 import { HiOutlineColorSwatch } from "react-icons/hi";
-import { MdColorLens } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { ToolContainer } from "./ToolContainer";
 import { VscSymbolColor } from "react-icons/vsc";
 
 export const ToolCard = ({
@@ -35,6 +33,8 @@ export const ToolCard = ({
         return <FiCommand style={{ width: "100%", height: "100%" }} />;
       case "blobber":
         return <FiStar style={{ width: "100%", height: "100%" }} />;
+      case "generative":
+        return <FiGift style={{ width: "100%", height: "100%" }} />;
       default:
         return <FiGift style={{ width: "100%", height: "100%" }} />;
     }

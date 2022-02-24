@@ -15,7 +15,14 @@ import {
 import { forwardRef, ReactElement, useMemo, useState } from "react";
 import { VscSymbolColor } from "react-icons/vsc";
 import { HiOutlineColorSwatch } from "react-icons/hi";
-import { FiBox, FiCircle, FiHome, FiImage, FiType } from "react-icons/fi";
+import {
+  FiBox,
+  FiCircle,
+  FiGift,
+  FiHome,
+  FiImage,
+  FiType,
+} from "react-icons/fi";
 import { ColoredToast } from "../components/ColoredToast";
 import { loremIpsum } from "lorem-ipsum";
 import chroma from "chroma-js";
@@ -486,6 +493,22 @@ export const CommandPaletteProvider = ({
       perform: () => (window.location.pathname = "blobs"),
       icon: (
         <FiCircle
+          style={{
+            width: "17px",
+            height: "17px",
+            marginBottom: "5px",
+          }}
+        />
+      ),
+    },
+    {
+      id: "generative",
+      name: "Generative",
+      section: "Navigation",
+      keywords: "generative grid image social banner pretty",
+      perform: () => (window.location.pathname = "generative"),
+      icon: (
+        <FiGift
           style={{
             width: "17px",
             height: "17px",

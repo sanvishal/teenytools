@@ -36,6 +36,13 @@ const apps = [
     name: "Command Palette",
     description: "⌘+K for Quick Navigation and Quicker Actions to more tools",
   },
+  {
+    id: "generative",
+    name: "Generative",
+    link: "/generative",
+    description:
+      "Generate Organic looking backgrounds to use for your social/blog cover images",
+  },
 ];
 
 const MotionSimpleGrid = motion(SimpleGrid);
