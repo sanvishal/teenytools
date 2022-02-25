@@ -21,3 +21,13 @@ export enum TinierTools {
   "WORD" = "WORD",
   "BASE64" = "BASE64",
 }
+
+export enum GenerativeStyles {
+  "META_BALLS" = "META_BALLS",
+  "HALF_CIRCLE_BRIDGE" = "HALF_CIRCLE_BRIDGE",
+}
+
+export const GenerativeStylesInfo = {
+  [GenerativeStyles.HALF_CIRCLE_BRIDGE]: { name: "Half Circle Bridge" },
+  [GenerativeStyles.META_BALLS]: { name: "Meta Balls" },
+};
