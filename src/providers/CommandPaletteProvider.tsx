@@ -503,7 +503,7 @@ export const CommandPaletteProvider = ({
     },
     {
       id: "generative",
-      name: "Generative",
+      name: "Generative (beta)",
       section: "Navigation",
       keywords: "generative grid image social banner pretty",
       perform: () => (window.location.pathname = "generative"),

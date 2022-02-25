@@ -24,21 +24,20 @@ import {
 import { motion } from "framer-motion";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import SVG from "svgjs";
-import { choose, randRange } from "../utils/utils";
+import { choose, randRange, shuffleArray } from "../utils/utils";
 import {
   FiArrowLeft,
   FiArrowRight,
   FiChevronDown,
-  FiMaximize,
+  FiMaximize2,
   FiRefreshCw,
-  FiSquare,
+  FiShare,
   FiStar,
 } from "react-icons/fi";
 import nicePalettes from "nice-color-palettes/500.json";
 import { BiMoveHorizontal, BiMoveVertical } from "react-icons/bi";
 import { saveSvgAsPng } from "save-svg-as-png";
 import { ColorPicker } from "../components/ColorPicker";
-import { ImEyedropper } from "react-icons/im";
 import { HiColorSwatch } from "react-icons/hi";
 import { GenerativeStyles, GenerativeStylesInfo } from "../types";
 
@@ -54,14 +53,14 @@ export const GenerativeBG = (): ReactElement => {
     "#424254",
     "#64908a",
     "#e8caa4",
-    "#cc2a41",
+    // "#cc2a41",
   ]);
   const [customPalette, setCustomPalette] = useState([
     "#351330",
     "#424254",
     "#64908a",
     "#e8caa4",
-    "#cc2a41",
+    // "#cc2a41",
   ]);
   const [isCustomPalette, setIsCustomPalette] = useState(false);
   const { isOpen: isPaletteOpen, onToggle: onPaletteToggle } = useDisclosure();
@@ -70,6 +69,7 @@ export const GenerativeBG = (): ReactElement => {
     selectedColor: currentRandomPalette[0],
   });
   const [style, setStyle] = useState(GenerativeStyles.META_BALLS);
+  const [exportScale, setExportScale] = useState(1);
 
   const clearCanvas = () => {
     getSvgCanvas()?.clear();
@@ -160,11 +160,232 @@ export const GenerativeBG = (): ReactElement => {
       },
     },
     {
-      id: "circle",
+      id: "corner-circle",
       draw: (x: number, y: number, fg: string, bg: string, svg: SVG.Doc) => {
-        const group = svg.group().addClass("circle-block");
+        const group = svg.group().addClass("corner-circle-block");
+        const circleGroup = svg.group();
+
         group.rect(getCellSize(), getCellSize()).fill(bg).move(x, y);
-        group.circle(getCellSize()).fill(fg).move(x, y);
+
+        const mask = svg
+          .rect(getCellSize(), getCellSize())
+          .fill("#fff")
+          .move(x, y);
+        const offset = choose([
+          [0, 0, getCellSize(), getCellSize()],
+          [0, getCellSize(), getCellSize(), 0],
+        ]);
+
+        if (Math.random() < 0.5) {
+          circleGroup
+            .circle(getCellSize() * 2)
+            .fill(fg)
+            // .stroke({ color: fg, width: 2 })
+            .center(x + offset[0], y + offset[1]);
+        } else {
+          circleGroup
+            .circle(getCellSize() * 2)
+            .fill(fg)
+            // .stroke({ color: fg, width: 2 })
+            .center(x + offset[2], y + offset[3]);
+        }
+
+        circleGroup.maskWith(mask);
+        group.add(circleGroup);
+      },
+    },
+  ];
+
+  const leaves = [
+    {
+      id: "leaf-circle",
+      draw: (x: number, y: number, fg: string, bg: string, svg: SVG.Doc) => {
+        const group = svg.group().addClass("leaf-block");
+        const circleGroup = svg.group();
+
+        group.rect(getCellSize(), getCellSize()).fill(bg).move(x, y);
+
+        const mask = svg
+          .rect(getCellSize(), getCellSize())
+          .fill("#fff")
+          .move(x, y);
+        const offset = choose([
+          [0, 0, getCellSize(), getCellSize()],
+          [0, getCellSize(), getCellSize(), 0],
+        ]);
+
+        let k = circleGroup
+          .circle(getCellSize() * 2)
+          .fill(bg)
+          // .stroke({ color: fg, width: 2 })
+          .center(x + offset[0], y + offset[1]);
+        circleGroup
+          .circle(getCellSize() * 2)
+          .fill(fg)
+          // .stroke({ color: fg, width: 2 })
+          .center(x + offset[0], y + offset[1])
+          .maskWith(k);
+        circleGroup
+          .circle(getCellSize() * 2)
+          .fill(fg)
+          // .stroke({ color: fg, width: 2 })
+          .center(x + offset[2], y + offset[3])
+          .maskWith(k);
+        circleGroup.maskWith(mask);
+        group.add(circleGroup);
+      },
+    },
+  ];
+
+  const sweep = [
+    {
+      id: "sweep-circle",
+      draw: (x: number, y: number, fg: string, bg: string, svg: SVG.Doc) => {
+        const group = svg.group().addClass("sweep-circle-block");
+        const circleGroup = svg.group();
+
+        group.rect(getCellSize(), getCellSize()).fill(bg).move(x, y);
+
+        const mask = svg
+          .rect(getCellSize(), getCellSize())
+          .fill("#fff")
+          .move(x, y);
+        const offset = choose([
+          [0, 0, getCellSize(), getCellSize()],
+          [0, getCellSize(), getCellSize(), 0],
+        ]);
+        for (let i = 0; i <= getCellSize(); i += getCellSize() / 10) {
+          circleGroup
+            .circle(i)
+            .fill("transparent")
+            .stroke({ color: fg, width: 2 })
+            .center(x + offset[0], y + offset[1]);
+        }
+
+        for (let i = 0; i <= getCellSize(); i += getCellSize() / 10) {
+          circleGroup
+            .circle(i)
+            .fill("transparent")
+            .stroke({ color: fg, width: 2 })
+            .center(x + offset[2], y + offset[3]);
+        }
+
+        circleGroup.maskWith(mask);
+        group.add(circleGroup);
+      },
+    },
+    {
+      id: "triangle",
+      draw: (x: number, y: number, fg: string, bg: string, svg: SVG.Doc) => {
+        const group = svg.group().addClass("triangle-block");
+        const circleGroup = svg.group();
+
+        group.rect(getCellSize(), getCellSize()).fill(bg).move(x, y);
+
+        const mask = svg
+          .rect(getCellSize(), getCellSize())
+          .fill("#fff")
+          .move(x, y);
+
+        circleGroup
+          .rect(
+            Math.hypot(getCellSize(), getCellSize()),
+            Math.hypot(getCellSize(), getCellSize())
+          )
+          .fill(fg)
+          // .fill("transparent")
+          .center(x + getCellSize(), y + getCellSize())
+          .rotate(45);
+
+        circleGroup.maskWith(mask);
+        group.add(circleGroup);
+      },
+    },
+  ];
+
+  const roads = [
+    {
+      id: "circle-stroke",
+      draw: (x: number, y: number, fg: string, bg: string, svg: SVG.Doc) => {
+        const group = svg.group().addClass("circle-stroke");
+        const circleGroup = svg.group();
+
+        group.rect(getCellSize(), getCellSize()).fill(bg).move(x, y);
+
+        const mask = svg
+          .rect(getCellSize(), getCellSize())
+          .fill("#fff")
+          .move(x, y);
+        const offset = choose([
+          [0, getCellSize()],
+          [getCellSize(), 0],
+          [0, 0],
+          [getCellSize(), getCellSize()],
+        ]);
+
+        circleGroup
+          .circle(getCellSize() * 2)
+          .fill(fg)
+          // .fill("transparent")
+          .center(x + offset[0], y + offset[1]);
+        circleGroup
+          .circle(getCellSize())
+          .fill(bg)
+          // .fill("transparent")
+          .center(x + offset[0], y + offset[1]);
+
+        circleGroup.maskWith(mask);
+        group.add(circleGroup);
+      },
+    },
+    {
+      id: "butt",
+      draw: (x: number, y: number, fg: string, bg: string, svg: SVG.Doc) => {
+        const group = svg.group().addClass("butt-block");
+        const circleGroup = svg.group();
+
+        group.rect(getCellSize(), getCellSize()).fill(bg).move(x, y);
+
+        const mask = svg
+          .rect(getCellSize(), getCellSize())
+          .fill("#fff")
+          .move(x, y);
+        const choice = choose([1, 2, 3, 4]);
+
+        if (choice === 1) {
+          circleGroup
+            .circle(getCellSize())
+            .fill(fg)
+            .center(x + getCellSize(), y + getCellSize());
+          circleGroup
+            .circle(getCellSize())
+            .fill(fg)
+            .center(x + getCellSize(), y);
+        } else if (choice === 2) {
+          circleGroup
+            .circle(getCellSize())
+            .fill(fg)
+            .center(x + getCellSize(), y + getCellSize());
+          circleGroup
+            .circle(getCellSize())
+            .fill(fg)
+            .center(x, y + getCellSize());
+        } else if (choice === 3) {
+          circleGroup.circle(getCellSize()).fill(fg).center(x, y);
+          circleGroup
+            .circle(getCellSize())
+            .fill(fg)
+            .center(x + getCellSize(), y);
+        } else if (choice === 4) {
+          circleGroup.circle(getCellSize()).fill(fg).center(x, y);
+          circleGroup
+            .circle(getCellSize())
+            .fill(fg)
+            .center(x, y + getCellSize());
+        }
+
+        circleGroup.maskWith(mask);
+        group.add(circleGroup);
       },
     },
   ];
@@ -175,6 +396,12 @@ export const GenerativeBG = (): ReactElement => {
         return circleBridge;
       case GenerativeStyles.META_BALLS:
         return metaBalls;
+      case GenerativeStyles.SWEEP:
+        return sweep;
+      case GenerativeStyles.ROADS:
+        return roads;
+      case GenerativeStyles.LEAVES:
+        return leaves;
     }
   };
 
@@ -195,7 +422,9 @@ export const GenerativeBG = (): ReactElement => {
   };
 
   const drawRandom = () => {
-    const colorPalette = isCustomPalette ? customPalette : choose(nicePalettes);
+    const randPal = choose(nicePalettes);
+    shuffleArray(randPal);
+    const colorPalette = isCustomPalette ? customPalette : randPal.slice(0, 4);
     if (!isCustomPalette) {
       setCurrentRandomPalette(colorPalette);
       setCustomPalette(colorPalette);
@@ -567,6 +796,72 @@ export const GenerativeBG = (): ReactElement => {
                     </Collapse>
                   </Center>
                 </VStack>
+              </Box>
+              <Box w="full" p={1}>
+                <HStack>
+                  <VStack
+                    w="40%"
+                    p={3}
+                    align="flex-start"
+                    justify="flex-start"
+                    bg="dialogFg"
+                    borderRadius="md"
+                    h={100}
+                  >
+                    <Box textAlign="left">
+                      <Text fontSize="lg">Scale</Text>
+                    </Box>
+                    <InputGroup role="group">
+                      <Input
+                        value={exportScale}
+                        type="number"
+                        placeholder="scale"
+                        onChange={(e) => {
+                          setExportScale(
+                            e.target.valueAsNumber <= 6 &&
+                              e.target.valueAsNumber >= 1
+                              ? e.target.valueAsNumber
+                              : 1
+                          );
+                        }}
+                      />
+                      <InputLeftElement
+                        pointerEvents="none"
+                        color="inputIconUnFocus"
+                        _groupFocusWithin={{
+                          color: "inputIconFocus",
+                        }}
+                        children={<FiMaximize2 />}
+                      />
+                    </InputGroup>
+                  </VStack>
+                  <VStack
+                    w="100%"
+                    p={3}
+                    align="flex-start"
+                    justify="flex-start"
+                    bg="dialogFg"
+                    borderRadius="md"
+                    h={100}
+                  >
+                    <Button
+                      rightIcon={<FiShare style={{ marginBottom: "4px" }} />}
+                      isFullWidth
+                      // h={20}
+                      h="full"
+                      fontSize="xl"
+                      onClick={() => {
+                        saveSvgAsPng(
+                          document.getElementById("svgCont"),
+                          `generative_grid_${new Date().toISOString()}.png`,
+                          { scale: exportScale }
+                        );
+                      }}
+                    >
+                      Export as PNG
+                    </Button>
+                  </VStack>
+                </HStack>
               </Box>
             </VStack>
           </Box>

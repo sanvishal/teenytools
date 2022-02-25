@@ -7,7 +7,7 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-import { ReactElement, useEffect } from "react";
+import { ReactElement } from "react";
 import { ColorModeSwitcher } from "../ColorModeSwitcher";
 import Logo from "../assets/logo.png";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -22,10 +22,6 @@ export const NavBar = (): ReactElement => {
   const navigate = useNavigate();
   const location = useLocation();
   const { query } = useKBar();
-
-  useEffect(() => {
-    console.log(location);
-  }, [location]);
 
   return (
     <Flex

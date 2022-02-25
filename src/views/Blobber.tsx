@@ -25,11 +25,13 @@ import {
   FiCopy,
   FiMaximize,
   FiRefreshCw,
+  FiShare,
   FiStar,
 } from "react-icons/fi";
 import { ColoredToast } from "../components/ColoredToast";
 import { spline } from "../utils/svgUtils";
 import { randRange } from "../utils/utils";
+import { saveSvgAsPng } from "save-svg-as-png";
 
 const MotionBox = motion(Box);
 
@@ -165,6 +167,7 @@ export const Blobber = (): ReactElement => {
               width="100%"
               height="100%"
               ref={svgRef}
+              id="svgCont"
             >
               <path
                 ref={pathRef}
@@ -398,17 +401,34 @@ export const Blobber = (): ReactElement => {
                 <Divider />
               </Center>
               <Box p={1} w="full" mb={2}>
-                <Button
-                  rightIcon={<FiCopy />}
-                  isFullWidth
-                  h={20}
-                  fontSize="xl"
-                  onClick={() => {
-                    copyToClipBoard(path, "copied path to clipboard");
-                  }}
-                >
-                  Copy Path To Clipboard
-                </Button>
+                <HStack>
+                  <Button
+                    rightIcon={<FiCopy />}
+                    isFullWidth
+                    h={20}
+                    fontSize="xl"
+                    onClick={() => {
+                      copyToClipBoard(path, "copied path to clipboard");
+                    }}
+                  >
+                    Copy Path
+                  </Button>
+                  <Button
+                    rightIcon={<FiShare />}
+                    isFullWidth
+                    h={20}
+                    fontSize="xl"
+                    onClick={() => {
+                      saveSvgAsPng(
+                        document.getElementById("svgCont"),
+                        `blobber_${new Date().toISOString()}.png`,
+                        { scale: 1 }
+                      );
+                    }}
+                  >
+                    Download PNG
+                  </Button>
+                </HStack>
               </Box>
             </VStack>
           </Box>

@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, HStack, Text } from "@chakra-ui/react";
 import { useKBar } from "kbar";
 import { ReactElement } from "react";
 import { FiBox, FiCommand, FiGift, FiStar } from "react-icons/fi";
@@ -74,9 +74,21 @@ export const ToolCard = ({
         className="tool-tile"
       >
         <Box zIndex={1} position="relative">
-          <Text fontFamily={"fancy"} fontSize={"5xl"} className="no-select">
-            {toolName}
-          </Text>
+          <HStack>
+            <Text fontFamily={"fancy"} fontSize={"5xl"} className="no-select">
+              {toolName}
+            </Text>
+            {id === "generative" && (
+              <Box
+                style={{ marginBottom: "25px" }}
+                fontSize="3xl"
+                fontWeight="normal"
+                opacity={0.6}
+              >
+                β
+              </Box>
+            )}
+          </HStack>
           <Text
             fontFamily={"fancy"}
             fontSize={"xl"}

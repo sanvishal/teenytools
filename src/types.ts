@@ -25,9 +25,15 @@ export enum TinierTools {
 export enum GenerativeStyles {
   "META_BALLS" = "META_BALLS",
   "HALF_CIRCLE_BRIDGE" = "HALF_CIRCLE_BRIDGE",
+  "SWEEP" = "SWEEP",
+  "ROADS" = "ROADS",
+  "LEAVES" = "LEAVES",
 }
 
 export const GenerativeStylesInfo = {
   [GenerativeStyles.HALF_CIRCLE_BRIDGE]: { name: "Half Circle Bridge" },
   [GenerativeStyles.META_BALLS]: { name: "Meta Balls" },
+  [GenerativeStyles.SWEEP]: { name: "Sweep" },
+  [GenerativeStyles.ROADS]: { name: "Roads" },
+  [GenerativeStyles.LEAVES]: { name: "Leaves" },
 };
