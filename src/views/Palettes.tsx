@@ -1,12 +1,24 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import colorPalettes from "nice-color-palettes/100.json";
 import { ColorGrid, ColorGridContainer } from "../components/ColorGrid";
+import { PaletteDialog } from "../components/PaletteDialog";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const MotionBox = motion(Box);
 
 export const Palettes = (): ReactElement => {
+  const [isPaletteDialogOpen, setIsPaletteDialogOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    const palette = searchParams.get("p");
+    if (palette) {
+      setIsPaletteDialogOpen(true);
+    }
+  }, [searchParams.get("p")]);
+
+  const navigate = useNavigate();
   return (
     <MotionBox
       w="100%"
@@ -39,6 +51,19 @@ export const Palettes = (): ReactElement => {
           })}
         </SimpleGrid>
       </Box>
+      <PaletteDialog
+        isOpen={isPaletteDialogOpen}
+        onClose={() => {
+          setIsPaletteDialogOpen(false);
+          navigate("/palettes");
+        }}
+        colors={
+          searchParams
+            ?.get("p")
+            ?.split("-")
+            ?.map((col) => "#" + col) || ["#ffffff"]
+        }
+      />
     </MotionBox>
   );
 };

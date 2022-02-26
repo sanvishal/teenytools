@@ -16,7 +16,7 @@ const apps = [
     id: "palettes",
     link: "/palettes",
     description:
-      "A Local Repository to use, edit, share and export your favorite palettes",
+      "A curated list of color palettes to use, edit, share and export",
   },
   {
     id: "placeholders",

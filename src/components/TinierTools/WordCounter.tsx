@@ -39,7 +39,9 @@ export const WordCounter = ({
   isOpen: boolean;
   onClose: () => void;
 }): ReactElement => {
-  const [input, setInput] = useState("bas absd sdsdf sdbf sdfbdsf dsfb");
+  const [input, setInput] = useState(
+    "The quick brown fox jumps over the lazy dog"
+  );
 
   const toast = useToast();
   const copyToClipBoard = (thingToCopy: string, message: string) => {
