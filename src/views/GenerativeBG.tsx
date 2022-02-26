@@ -434,10 +434,10 @@ export const GenerativeBG = (): ReactElement => {
 
     const svg = getSvgCanvas()
       .group()
-      .style({
-        filter:
-          "drop-shadow(0px 0px 20px var(--chakra-colors-svgPathDropShadowColor))",
-      })
+      // .style({
+      //   filter:
+      //     "drop-shadow(0px 0px 20px var(--chakra-colors-svgPathDropShadowColor))",
+      // })
       .translate(
         Math.floor(
           (getCellSize() *

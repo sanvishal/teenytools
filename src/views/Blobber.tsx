@@ -173,7 +173,7 @@ export const Blobber = (): ReactElement => {
                 ref={pathRef}
                 fill={color}
                 d={path}
-                filter="drop-shadow(0px 0px 20px var(--chakra-colors-svgPathDropShadowColor))"
+                // filter="drop-shadow(0px 0px 20px var(--chakra-colors-svgPathDropShadowColor))"
               />
             </svg>
           </Center>
